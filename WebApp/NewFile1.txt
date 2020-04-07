@@ -1,0 +1,10 @@
+﻿POST    /login
+POST    /register
+GET     /questions/my
+GET     /questions/{id}
+GET     /questions/{id}/votes
+DELETE  /questions/{id}
+POST    /questions/{id}/vote
+POST    /questions/add
+PUT     /questions/edit
+
