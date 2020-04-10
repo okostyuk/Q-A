@@ -1,8 +1,8 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Cryptography;
-using System.Text;
+using System.Transactions;
 
 namespace WebApp.Domain
 {
@@ -15,23 +15,24 @@ namespace WebApp.Domain
             _dataRepository = dataRepository;
         }
 
-        public void SignUp(User user)
+        public User SignUp(string email, string password)
         {
-            var existUser = _dataRepository.FindUserByEmail(user.Email);
+            var existUser = _dataRepository.FindUserByEmail(email);
             if (existUser != null) throw new InvalidDataException("User with this email already exists");
-            user.Password = Hash(user.Password);
-            _dataRepository.AddUser(user);
+            var storedUser = _dataRepository.AddUser(
+                new User{Email = email, Password = Utils.Hash(password)});
+            return storedUser;
         }
 
-        public string SignIn(User user)
+        public User SignIn(string email, string password)
         {
-            Console.WriteLine("SignIn {0}", user.Email );
-            var existUser = _dataRepository.FindUserByEmail(user.Email);
+            Console.WriteLine("SignIn {0}", email );
+            var existUser = _dataRepository.FindUserByEmail(email);
             Console.WriteLine("existUser: {0}", existUser);
             if (existUser == null) throw new InvalidDataException("User not found");
-            if (existUser.Password.Equals(Hash(user.Password)))
+            if (existUser.Password.Equals(Utils.Hash(password)))
             {
-                return existUser.Id;
+                return existUser;
             }
 
             throw new InvalidDataException("Invalid password");
@@ -39,19 +40,14 @@ namespace WebApp.Domain
 
         public Question CreateQuestion(Question question)
         {
-            return _dataRepository.addQuestion(question);
+            return _dataRepository.AddQuestion(question);
         }
 
-        public List<Question> GetQuestions(string userId)
+        public List<Question> GetQuestions(string? questionId, string? userId)
         {
-            if (userId == null)
-            {
-                return _dataRepository.FindQuestionsByUser(userId);
-            }
-            else
-            {
-                return _dataRepository.FindPublicQuestions();
-            }
+            return userId != null 
+                ? _dataRepository.FindQuestionsByUser(userId) 
+                : _dataRepository.FindPublicQuestions();
         }
 
         public Question GetQuestion(string id)
@@ -59,11 +55,19 @@ namespace WebApp.Domain
             return _dataRepository.FindQuestionById(id);
         }
 
-        private static string Hash(string value)
+        public User GetUser(string userId)
         {
-            var encoder = Encoding.ASCII;  // TODO replace ASCII by UTF-8?
-            var hashedData = MD5.Create().ComputeHash(encoder.GetBytes(value)); 
-            return encoder.GetString(hashedData);
+            throw new NotImplementedException();
+        }
+
+        public List<User> GetUsers()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Vote(string questionId, string answerId, string userId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

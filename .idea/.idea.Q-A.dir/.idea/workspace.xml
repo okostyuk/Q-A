@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="4c5819ef-e4f8-4ffe-96ab-e997b61d7c6f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.Q-A.dir/.idea/contentModel.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.Q-A.dir/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.Q-A.dir/.idea/indexLayout.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.Q-A.dir/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.Q-A.dir/.idea/projectSettingsUpdater.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.Q-A.dir/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.Q-A.dir/riderModule.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/.idea/.idea.WebApp/.idea/contentModel.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/.idea/.idea.WebApp/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/.idea/.idea.WebApp/.idea/indexLayout.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/.idea/.idea.WebApp/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/.idea/.idea.WebApp/.idea/projectSettingsUpdater.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/.idea/.idea.WebApp/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/.idea/.idea.WebApp/riderModule.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/Data/DatabaseService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/Domain/Entity/Answer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/Domain/Entity/Interview.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/Domain/Entity/Question.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/Domain/Entity/User.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/Presentation/Controllers/ApiController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/Presentation/Controllers/WeatherForecastController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/Program.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/Properties/launchSettings.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/Startup.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/WeatherForecast.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/WebApp.csproj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/WebApp.sln" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/appsettings.Development.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/appsettings.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/wwwroot/App.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/wwwroot/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebApp/wwwroot/index.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1a6kDBstzzgNJSL6U5gN4O6U3Eg" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4c5819ef-e4f8-4ffe-96ab-e997b61d7c6f" name="Default Changelist" comment="" />
+      <created>1586063308617</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1586063308617</updated>
+      <workItem from="1586063310856" duration="161000" />
+      <workItem from="1586118617074" duration="14000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

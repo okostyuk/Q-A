@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace WebApp.Domain
 {
@@ -12,5 +13,7 @@ namespace WebApp.Domain
         public DateTime ExpiresDate { get; set; }
         public DateTime PublishDate { get; set; }
         public bool Published { get; set; }
+        
+        public List<Answer> Answers { get; set; }
     }
 }
