@@ -32,10 +32,11 @@ namespace WebApp.Data
             connection.Execute("CREATE DATABASE " + DatabaseName);
         }
 
-        public void AddUser(User user)
+        public User AddUser(User user)
         {
             const string sql = "INSERT INTO [q-a].main.users (Email, Password) Values (@email, @password);";
             _connection.Execute(sql, user);
+            return null;
         }
 
         public void UpdateUser(User user)
@@ -54,7 +55,8 @@ namespace WebApp.Data
         {
             const string sql = "SELECT * FROM [q-a].main.users WHERE email = @Email;";
             Console.WriteLine(sql);
-            return _connection.Query<User>(sql, new {Email = email}).First();
+            var resultSet = _connection.Query<User>(sql, new {Email = email});
+            return resultSet.SingleOrDefault();
         }
 
         public List<Question> FindPublicQuestions()
@@ -62,6 +64,11 @@ namespace WebApp.Data
             return _connection.Query<Question>(
                     "SELECT * FROM [q-a].main.questions WHERE published = 1;"
                 ).AsList();
+        }
+
+        public Question AddQuestion(Question question)
+        {
+            throw new NotImplementedException();
         }
 
         public List<Question> FindQuestionsByUser(string userId)

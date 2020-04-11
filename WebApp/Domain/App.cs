@@ -21,7 +21,7 @@ namespace WebApp.Domain
             if (existUser != null) throw new InvalidDataException("User with this email already exists");
             var storedUser = _dataRepository.AddUser(
                 new User{Email = email, Password = Utils.Hash(password)});
-            return storedUser;
+            return new User {Email = email, Password = Utils.Hash(password)};
         }
 
         public User SignIn(string email, string password)

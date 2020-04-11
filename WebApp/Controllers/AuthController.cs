@@ -1,3 +1,5 @@
+using System.IO;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Domain;
 
@@ -21,15 +23,39 @@ namespace WebApp.Controllers
         }
 
         [HttpPost("signUp")]
-        public User SignUp(AuthRequest authRequest)
+        public AuthResponse SignUp(AuthRequest authRequest)
         {
-            return _app.SignUp(authRequest.Email, authRequest.Password);
+            try
+            {
+                var user = _app.SignUp(authRequest.Email, authRequest.Password);
+                return new AuthResponse() {User = user, Status = "OK"};
+            }
+            catch (InvalidDataException ex)
+            {
+                return new AuthResponse() { Status = "Error", Error = ex.Message};
+            }
+            catch
+            {
+                return new AuthResponse() { Status = "Error", Error = "Internal error, try back shortly"};
+            }
         }
         
         [HttpPost("")]
-        public User Auth(AuthRequest authRequest)
+        public AuthResponse Auth(AuthRequest authRequest)
         {
-            return _app.SignIn(authRequest.Email, authRequest.Password);
+            try
+            {
+                var user = _app.SignIn(authRequest.Email, authRequest.Password);
+                return new AuthResponse() {User = user, Status = "OK"};
+            }
+            catch (InvalidDataException ex)
+            {
+                return new AuthResponse() { Status = "Error", Error = ex.Message};
+            }
+            catch
+            {
+                return new AuthResponse() { Status = "Error", Error = "Internal error, try back shortly"};
+            }
         }
         
     }

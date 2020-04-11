@@ -1,31 +1,85 @@
 <template>
     <div>
         <h2>{{page_title}}</h2>
-        <input placeholder="Email address"><br>
-        <input placeholder="Password"><br>
+        <input placeholder="Email address" v-model="email"><br>
+        <input placeholder="Password" v-model="password"><br>
+        <p class="error">{{error_label}}</p>
         <button v-on:click="login()">Sign In</button> or
-        <button id="registerButton">Register</button>
+        <button v-on:click="register()">Register</button>
+        <br/>
+        <loader v-if="loading"/>
+        <br/>
         <hr>
         <router-link to="/my">Link to My questions</router-link>
     </div>
 </template>
 
 <script>
+    import Loader from '@/components/Loader'
     export default {
         name: "Login",
         data: function() {
             return {
-                page_title: 'Login page'
+                page_title: 'Login page',
+                error_label: '',
+                loading: false,
+                email: '',
+                password: ''
             }
         },
         methods: {
+            register() {
+                this.authRequest('/api/auth/signUp');
+            },
             login() {
-                this.$router.push('/my')
-            }
+                this.authRequest('/api/auth');
+            },
+            authRequest(path) {
+                this.loading = true;
+                this.error_label = '';
+                fetch(path,
+                    {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            email: this.email,
+                            password: this.password
+                        })
+                    })
+                    .then(response => {
+                        if (response.status !== 200) {
+                            this.loading = false;
+                            this.error_label = "Response error: " + response.status
+                        } else {
+                            response.json().then(
+                                authResponse => {
+                                    if (authResponse.status === 'OK') {
+                                        this.store.userId = authResponse.user.id;
+                                        this.$router.push('/home')
+                                    } else {
+                                        this.loading = false;
+                                        this.error_label = "Response error: " + authResponse.error
+                                    }
+                                }
+                            )
+                        }
+                    });
+            },
+        },
+        components: {
+            Loader
+        },
+        mounted() {
+
         }
     }
 </script>
 
 <style scoped>
-
+    .error {color: orangered}
+    input,
+    button {
+        margin: 8px;
+        padding: 8px;
+    }
 </style>
