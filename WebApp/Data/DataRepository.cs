@@ -11,7 +11,7 @@ namespace WebApp.Data
     public class DataRepository : IDataRepository 
     {
         private const string DatabaseName = "q-a";
-        private const string ConnString = @"Server=.\SQLEXPRESS;Database=q-a;User Id=sa;Password=server";
+        private const string ConnString = @"Server=192.168.1.128\SQLEXPRESS;Database=q-a;User Id=sa;Password=server";
 
         private readonly SqlConnection _connection;
        

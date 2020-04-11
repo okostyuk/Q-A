@@ -3,14 +3,12 @@
         <h2>{{page_title}}</h2>
         <input placeholder="Email address" v-model="email"><br>
         <input placeholder="Password" v-model="password"><br>
-        <p class="error">{{error_label}}</p>
+        <p v-if="!loading" class="error">{{error_label}}</p>
+        <div><loader v-if="loading"/></div>
         <button v-on:click="login()">Sign In</button> or
         <button v-on:click="register()">Register</button>
         <br/>
-        <loader v-if="loading"/>
         <br/>
-        <hr>
-        <router-link to="/my">Link to My questions</router-link>
     </div>
 </template>
 
@@ -29,7 +27,9 @@
         },
         methods: {
             register() {
-                this.authRequest('/api/auth/signUp');
+                this.loading = true;
+                this.error_label = '';
+                setTimeout(() => this.authRequest('/api/auth/signUp'), 2000);
             },
             login() {
                 this.authRequest('/api/auth');
@@ -77,9 +77,4 @@
 
 <style scoped>
     .error {color: orangered}
-    input,
-    button {
-        margin: 8px;
-        padding: 8px;
-    }
 </style>
