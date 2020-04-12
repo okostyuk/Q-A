@@ -4,18 +4,15 @@
     <h1>Q&A Application</h1>
     <navigationBar/>
     <router-view />
-    <!--<HelloWorld msg="Welcome to Your Vue.js App"/>-->
   </div>
 </template>
 
 <script>
   import NavigationBar from './components/NavigationBar'
-//import Login from './views/Login.vue'
-//import Router from './router'
+
 export default {
   name: 'App',
   navigationBar: NavigationBar,
-  //router: Router,
   components: {
     NavigationBar
   },

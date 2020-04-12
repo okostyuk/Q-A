@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Domain;
@@ -27,15 +28,16 @@ namespace WebApp.Controllers
             try
             {
                 var user = _app.SignUp(authRequest.Email, authRequest.Password);
-                return new AuthResponse() {User = user, Status = "OK"};
+                return new AuthResponse {User = user, Status = "OK"};
             }
             catch (InvalidDataException ex)
             {
-                return new AuthResponse() { Status = "Error", Error = ex.Message};
+                return new AuthResponse { Status = "Error", Error = ex.Message};
             }
-            catch
+            catch (Exception ex)
             {
-                return new AuthResponse() { Status = "Error", Error = "Internal error, try back shortly"};
+                Console.WriteLine(ex.ToString());
+                return new AuthResponse { Status = "Error", Error = "Internal error, try back shortly"};
             }
         }
         
@@ -51,8 +53,9 @@ namespace WebApp.Controllers
             {
                 return new AuthResponse() { Status = "Error", Error = ex.Message};
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.ToString());
                 return new AuthResponse() { Status = "Error", Error = "Internal error, try back shortly"};
             }
         }

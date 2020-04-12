@@ -27,11 +27,11 @@
                 Ответы:
                 <br/>
                 <input class="answer" v-for="answer in answers" :key="answer.text" placeholder="Напишите текст ответа">
-                <button v-on:click="addAnswer()">Добавиь вариант ответа</button>
+                <button @click="addAnswer()">Добавиь вариант ответа</button>
             </div>
             <div id="buttons">
-                <button @click="goBack">Сохранить</button>
-                <button>Опубликовать</button>
+                <button @click="save">Сохранить</button>
+                <button @click="publish">Опубликовать</button>
             </div>
         </div>
     </div>
@@ -58,6 +58,42 @@
             },
             goBack() {
                 window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/')
+            },
+            publish() {
+                this.addQuestion(new Date())
+            },
+            save() {
+                this.addQuestion(null)
+            },
+            addQuestion(publishDate) {
+                fetch('/api/questions/add',
+                    {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            title: this.title,
+                            answers: this.answers,
+                            expiresDate: this.expiresDate,
+                            publishDate: publishDate,
+                            maxCustomAnswers: this.customAnswersAllowed ? 0 : this.maxCustomAnswers
+                        })
+                    }
+                ).then(
+                    response => {
+                        if (response.status !== 200) {
+                            alert("FAILED: " + response.status)
+                        } else {
+                            response.json().then(json => {
+                                if (json.error !== undefined) {
+                                    alert("ERROR: " + json.error)
+                                } else {
+                                    alert("SUCCESS")
+                                }
+                            })          
+                        }
+                    },
+                    () => {alert("FAILED")}
+                )
             }
         }
     }

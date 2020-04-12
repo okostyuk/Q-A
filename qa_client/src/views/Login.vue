@@ -54,7 +54,6 @@
                             response.json().then(
                                 authResponse => {
                                     if (authResponse.status === 'OK') {
-                                        this.store.userId = authResponse.user.id;
                                         this.$router.push('/home')
                                     } else {
                                         this.loading = false;

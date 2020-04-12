@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Transactions;
 
 namespace WebApp.Domain
 {
@@ -19,9 +18,8 @@ namespace WebApp.Domain
         {
             var existUser = _dataRepository.FindUserByEmail(email);
             if (existUser != null) throw new InvalidDataException("User with this email already exists");
-            var storedUser = _dataRepository.AddUser(
-                new User{Email = email, Password = Utils.Hash(password)});
-            return new User {Email = email, Password = Utils.Hash(password)};
+            var storedUser = _dataRepository.AddUser(email, Utils.Hash(password));
+            return storedUser;
         }
 
         public User SignIn(string email, string password)
@@ -40,6 +38,7 @@ namespace WebApp.Domain
 
         public Question CreateQuestion(Question question)
         {
+            question.UserId = "1";
             return _dataRepository.AddQuestion(question);
         }
 

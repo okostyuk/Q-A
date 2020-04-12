@@ -1,24 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Domain;
 
 /*
-GET     /questions
-    ?userId=optional
-    &questionId=optional
+GET     /questions?userId=optional
+GET     /questions/{questionId}
 POST    /questions/add
-PUT     /questions/{id}/edit
+PUT     /questions/{questionId}/edit
 
-DELETE  /questions/
-    ?questionId=optional
-
-POST    /questions/{id}/vote/{answerId}
+DELETE  /questions/{questionId}
+POST    /questions/{questionId}/vote/{answerId}
 */
 namespace WebApp.Controllers
 {
     [ApiController]
-    [Route("api/questions")]
-    public class QuestionsController : ControllerBase
+    [Route("api/")]
+    public class QuestionsController
     {
         
         private readonly IApp _appModel;
@@ -41,9 +39,23 @@ namespace WebApp.Controllers
         }
         
         [HttpPost("questions/add")]
-        public Question AddQuestion(Question question)
+        public QuestionResponse AddQuestion(Question question)
         {
-            return _appModel.CreateQuestion(question);
+            var response = new QuestionResponse();
+            try
+            {
+                var storeQuestion = _appModel.CreateQuestion(question);
+                response.Status = "OK";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                response.Status = "ERROR";
+                response.Error = ex.Message;
+            }
+
+            return response;
+
         }
         
         [HttpPost("questions/{questionId}/vote/{answerId}")]
