@@ -20,7 +20,13 @@
         methods: {
             addQuestion() {
                 this.$router.push('/add')
+            },
+            loadQuestions() {
+                fetch('/api/questions')
             }
+        },
+        mounted() {
+            this.loadQuestions();
         }
     }
 </script>

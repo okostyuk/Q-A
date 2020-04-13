@@ -5,13 +5,14 @@ namespace WebApp.Domain
 {
     public interface IApp
     {
-        public User SignUp(string email, string password);
-        public User SignIn(string email, string password);
-        public Question CreateQuestion(Question question);
-        public List<Question> GetQuestions(string questionId, string userId);
-        public Question GetQuestion(string id);
-        User GetUser(string userId);
-        List<User> GetUsers();
-        public void Vote(string questionId, string answerId, string userId);
+        public string SignUp(string email, string password);
+        public string SignIn(string email, string password);
+        public Question CreateQuestion(string authToken, Question question);
+        public List<Question> GetQuestions(string authToken);
+        public List<Question> GetUserQuestions(string authToken);
+        public Question GetQuestion(string authToken, string id);
+        User GetUser(string authToken, string userId);
+        List<User> GetUsers(string authToken);
+        public void Vote(string authToken, string questionId, string answerId);
     }
 }

@@ -13,8 +13,10 @@ namespace WebApp.Controllers
     
     [ApiController]
     [Route("api/auth/")]
-    public class AuthController
+    public class AuthController : ControllerBase
     {
+        public const string AuthTokenCookieKey = "qa_auth_token";
+
         private readonly IApp _app;
 
         public AuthController(IApp app)
@@ -27,8 +29,10 @@ namespace WebApp.Controllers
         {
             try
             {
-                var user = _app.SignUp(authRequest.Email, authRequest.Password);
-                return new AuthResponse {User = user, Status = "OK"};
+                Console.WriteLine(HttpContext.User.Identity.ToString());
+                var authToken = _app.SignUp(authRequest.Email, authRequest.Password);
+                Response.Cookies.Append(AuthTokenCookieKey, authToken);
+                return new AuthResponse {Status = "OK"};
             }
             catch (InvalidDataException ex)
             {
@@ -46,12 +50,13 @@ namespace WebApp.Controllers
         {
             try
             {
-                var user = _app.SignIn(authRequest.Email, authRequest.Password);
-                return new AuthResponse() {User = user, Status = "OK"};
+                var authToken = _app.SignIn(authRequest.Email, authRequest.Password);
+                Response.Cookies.Append(AuthTokenCookieKey, authToken);
+                return new AuthResponse() { Status = "OK" };
             }
             catch (InvalidDataException ex)
             {
-                return new AuthResponse() { Status = "Error", Error = ex.Message};
+                return new AuthResponse() { Status = "Error", Error = ex.Message };
             }
             catch (Exception ex)
             {
@@ -59,6 +64,5 @@ namespace WebApp.Controllers
                 return new AuthResponse() { Status = "Error", Error = "Internal error, try back shortly"};
             }
         }
-        
     }
 }

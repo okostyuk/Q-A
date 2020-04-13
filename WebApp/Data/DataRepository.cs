@@ -15,6 +15,8 @@ namespace WebApp.Data
 
         private static volatile SqlConnection _connection;
        
+        private readonly Dictionary<string, string> _token2UserMap = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _user2TokenMap = new Dictionary<string, string>();
         private static SqlConnection GetConnection()
         {
             if (_connection != null) return _connection;
@@ -56,7 +58,7 @@ namespace WebApp.Data
         public List<Question> FindPublicQuestions()
         {
             return GetConnection().Query<Question>(
-                    "SELECT * FROM [q-a].dbo.questions WHERE published = 1;"
+                    "SELECT * FROM [q-a].dbo.questions WHERE publishDate in not NULL;"
                 ).AsList();
         }
 
@@ -78,14 +80,7 @@ namespace WebApp.Data
         {
             const string sql = @"INSERT INTO [q-a].dbo.questions (title, maxCustomAnswers, expireDate, userId, publishDate)
             VALUES  (@Title, @MaxCustomAnswers, @ExpiresDate, @UserId, @PublishDate);";
-            GetConnection().Execute(sql, new
-            {
-                Title = "TestTitle", 
-                MaxCustomAnswers=0, 
-                ExpireDate=new DateTime(),
-                UserId = 1,
-                PublishDate = new DateTime()
-            });
+            GetConnection().Execute(sql, question);
             return null;
         }
 
@@ -96,6 +91,33 @@ namespace WebApp.Data
                 var sql = "INSERT [q-a].dbo.answers INTO PROCESS_LOGS VALUES (@QuestionId, @UserId, @Text)";        
                 GetConnection().Execute(sql, answer);
             }
+        }
+
+        public void AddToken(string userId, string token)
+        {
+            var oldToken = _user2TokenMap.GetValueOrDefault(userId, null);
+            if (oldToken != null)
+            {
+                _user2TokenMap.Remove(userId);
+                _token2UserMap.Remove(oldToken);
+            }
+
+            _user2TokenMap.Add(userId, token);
+            _token2UserMap.Add(token, userId);
+        }
+
+        public User FindUserByToken(string token)
+        {
+            var userId = _token2UserMap.GetValueOrDefault(token, null);
+            return userId == null ? null : FindUserById(userId);
+        }
+
+        public void RemoveToken(string token)
+        {
+            var userId = _token2UserMap.GetValueOrDefault(token, null);
+            if (userId == null) return;
+            _token2UserMap.Remove(token);
+            _user2TokenMap.Remove(userId);
         }
 
         private void CreateDatabase(SqlConnection connection)

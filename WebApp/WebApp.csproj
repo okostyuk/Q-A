@@ -6,7 +6,34 @@
 
     <ItemGroup>
       <PackageReference Include="Dapper" Version="2.0.35" />
+      <PackageReference Include="DependencyInjection" Version="1.2.0" />
+      <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.3" />
       <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\css\app.67a61f39.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\chunk-0a79cca0.fa41c67a.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\chunk-5ebb5906.3f02f173.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\chunk-ae130dd4.dea856d2.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\app.5d696dd7.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\app.5d696dd7.js.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\chunk-0a79cca0.5b4eaade.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\chunk-0a79cca0.5b4eaade.js.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\chunk-2d0d7101.ca6782d3.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\chunk-2d0d7101.ca6782d3.js.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\chunk-2d21a3d2.90a1b79f.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\chunk-2d21a3d2.90a1b79f.js.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\chunk-5ebb5906.ab9141dd.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\chunk-5ebb5906.ab9141dd.js.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\chunk-ae130dd4.34d07b85.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\chunk-ae130dd4.34d07b85.js.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\chunk-vendors.e7ae5131.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\chunk-vendors.e7ae5131.js.map" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot" />
     </ItemGroup>
 
 

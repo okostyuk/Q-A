@@ -26,7 +26,10 @@
                 <hr>
                 Ответы:
                 <br/>
-                <input class="answer" v-for="answer in answers" :key="answer.text" placeholder="Напишите текст ответа">
+                    <div v-for="(answer, index) in answers" v-bind:key="answer.id" >
+                        <input class="answer" v-model='answer.text' placeholder="Напишите текст ответа"> 
+                        <button @click="deleteAnswer(index)" v-if="answers.length > 0">delete</button>
+                    </div>
                 <button @click="addAnswer()">Добавиь вариант ответа</button>
             </div>
             <div id="buttons">
@@ -48,13 +51,22 @@
                 customAnswersAllowed: false,
                 voteVariantsCount: 1,
                 answers: [
-                    {text: ''}
+                    {id: 0, text: ""}
                 ]
             }
         },
         methods: {
+            deleteAnswer(index) {
+                if (this.answers.length > 1) {
+                    this.answers.splice(index,1);
+                }
+            },
             addAnswer() {
-                this.answers.push({text: ''})
+                let _id = this.answers[this.answers.length-1].id + 1;
+                this.answers.push({
+                    id: _id,
+                    text: ""
+                })
             },
             goBack() {
                 window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/')
@@ -75,7 +87,7 @@
                             answers: this.answers,
                             expiresDate: this.expiresDate,
                             publishDate: publishDate,
-                            maxCustomAnswers: this.customAnswersAllowed ? 0 : this.maxCustomAnswers
+                            maxCustomAnswers: this.customAnswersAllowed ? this.maxCustomAnswers : 0
                         })
                     }
                 ).then(
@@ -140,7 +152,7 @@
     }
     
     .answer {
-        width: 700px;
+        width: 600px;
     }
     
     #root {

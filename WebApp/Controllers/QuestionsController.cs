@@ -16,7 +16,7 @@ namespace WebApp.Controllers
 {
     [ApiController]
     [Route("api/")]
-    public class QuestionsController
+    public class QuestionsController : ControllerBase
     {
         
         private readonly IApp _appModel;
@@ -27,15 +27,15 @@ namespace WebApp.Controllers
         }
 
         [HttpGet("questions")]
-        public List<Question> GetQuestions(string questionId, string userId)
+        public List<Question> GetQuestions()
         {
-            return _appModel.GetQuestions(questionId, userId);
+            return _appModel.GetQuestions(AuthToken());
         }
 
         [HttpGet("questions/{id}")]
         public Question GetQuestion(string id)
         {
-            return _appModel.GetQuestion(id);
+            return _appModel.GetQuestion(AuthToken(), id);
         }
         
         [HttpPost("questions/add")]
@@ -44,7 +44,7 @@ namespace WebApp.Controllers
             var response = new QuestionResponse();
             try
             {
-                var storeQuestion = _appModel.CreateQuestion(question);
+                var storeQuestion = _appModel.CreateQuestion(AuthToken(), question);
                 response.Status = "OK";
             }
             catch (Exception ex)
@@ -55,7 +55,6 @@ namespace WebApp.Controllers
             }
 
             return response;
-
         }
         
         [HttpPost("questions/{questionId}/vote/{answerId}")]
@@ -64,5 +63,9 @@ namespace WebApp.Controllers
             _appModel.Vote(questionId, answerId, userId);
         }
 
+        private string AuthToken()
+        {
+            return Request.Cookies[AuthController.AuthTokenCookieKey];
+        }
     }
 }

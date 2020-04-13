@@ -29,7 +29,7 @@
             register() {
                 this.loading = true;
                 this.error_label = '';
-                setTimeout(() => this.authRequest('/api/auth/signUp'), 2000);
+                setTimeout(() => this.authRequest('/api/auth/signUp'), 1000);
             },
             login() {
                 this.authRequest('/api/auth');
@@ -69,7 +69,6 @@
             Loader
         },
         mounted() {
-
         }
     }
 </script>
