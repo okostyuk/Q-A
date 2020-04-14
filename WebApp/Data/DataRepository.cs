@@ -8,7 +8,7 @@ using WebApp.Domain;
 
 namespace WebApp.Data
 {
-    public class DataRepository : IDataRepository 
+    public class DataRepository : IQuestionsRepository, IUserRepository
     {
         private const string DatabaseName = "q-a";
         private const string ConnString = @"Server=192.168.1.128\SQLEXPRESS;Database=q-a;User Id=sa;Password=server";

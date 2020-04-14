@@ -1,16 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using WebApp.Data;
 using WebApp.Domain;
 
@@ -33,8 +25,10 @@ namespace WebApp
                 configuration.RootPath = "../qa_client/dist";
             });
             services.AddControllers();
-            services.AddSingleton<IApp, App>();
-            services.AddSingleton<IDataRepository, DataRepository>();
+            services.AddSingleton<IQuestionsService, App>();
+            services.AddSingleton<IAuthService, App>();
+            services.AddSingleton<IQuestionsRepository, DataRepository>();
+            services.AddSingleton<IUserRepository, DataRepository>();
             services.AddCors(options =>
             {
                 options.AddPolicy("VueCorsPolicy", builder =>

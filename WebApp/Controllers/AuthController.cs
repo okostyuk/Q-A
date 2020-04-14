@@ -17,11 +17,11 @@ namespace WebApp.Controllers
     {
         public const string AuthTokenCookieKey = "qa_auth_token";
 
-        private readonly IApp _app;
+        private readonly IAuthService _authService;
 
-        public AuthController(IApp app)
+        public AuthController(IAuthService authService)
         {
-            _app = app;
+            _authService = authService;
         }
 
         [HttpPost("signUp")]
@@ -30,7 +30,7 @@ namespace WebApp.Controllers
             try
             {
                 Console.WriteLine(HttpContext.User.Identity.ToString());
-                var authToken = _app.SignUp(authRequest.Email, authRequest.Password);
+                var authToken = _authService.SignUp(authRequest.Email, authRequest.Password);
                 Response.Cookies.Append(AuthTokenCookieKey, authToken);
                 return new AuthResponse {Status = "OK"};
             }
@@ -50,7 +50,7 @@ namespace WebApp.Controllers
         {
             try
             {
-                var authToken = _app.SignIn(authRequest.Email, authRequest.Password);
+                var authToken = _authService.SignIn(authRequest.Email, authRequest.Password);
                 Response.Cookies.Append(AuthTokenCookieKey, authToken);
                 return new AuthResponse() { Status = "OK" };
             }

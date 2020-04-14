@@ -18,24 +18,23 @@ namespace WebApp.Controllers
     [Route("api/")]
     public class QuestionsController : ControllerBase
     {
+        private readonly IQuestionsService _questionsService;
         
-        private readonly IApp _appModel;
-        
-        public QuestionsController(IApp appModel)
+        public QuestionsController(IQuestionsService questionsService)
         {
-            _appModel = appModel;
+            _questionsService = questionsService;
         }
 
         [HttpGet("questions")]
         public List<Question> GetQuestions()
         {
-            return _appModel.GetQuestions(AuthToken());
+            return _questionsService.GetQuestions(AuthToken());
         }
 
         [HttpGet("questions/{id}")]
         public Question GetQuestion(string id)
         {
-            return _appModel.GetQuestion(AuthToken(), id);
+            return _questionsService.GetQuestion(AuthToken(), id);
         }
         
         [HttpPost("questions/add")]
@@ -44,7 +43,7 @@ namespace WebApp.Controllers
             var response = new QuestionResponse();
             try
             {
-                var storeQuestion = _appModel.CreateQuestion(AuthToken(), question);
+                _questionsService.CreateQuestion(AuthToken(), question);
                 response.Status = "OK";
             }
             catch (Exception ex)
@@ -60,7 +59,7 @@ namespace WebApp.Controllers
         [HttpPost("questions/{questionId}/vote/{answerId}")]
         public void Vote(string questionId, string answerId, string userId)
         {
-            _appModel.Vote(questionId, answerId, userId);
+            _questionsService.Vote(AuthToken(), answerId, userId);
         }
 
         private string AuthToken()
