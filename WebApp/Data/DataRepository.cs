@@ -84,7 +84,7 @@ namespace WebApp.Data
             return null;
         }
 
-        public void AddAnswers(List<Answer> answers)
+        public void AddAnswers(string questionId, List<Answer> answers)
         {
             foreach (var answer in answers)
             {

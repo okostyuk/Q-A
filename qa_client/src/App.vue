@@ -23,6 +23,7 @@ export default {
 
 <style>
   :root {
+    --primary-color-transparent: rgba(65, 184, 131, 0.2);
     --primary-color: #41B883;
     --secondary-color: #35495E;
     --placeholder-color: #cfcfcf

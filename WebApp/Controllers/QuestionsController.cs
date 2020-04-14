@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Domain;
 
 /*
 GET     /questions?userId=optional
 GET     /questions/{questionId}
+GET     /questions/my
 POST    /questions/add
 PUT     /questions/{questionId}/edit
 
@@ -26,9 +26,35 @@ namespace WebApp.Controllers
         }
 
         [HttpGet("questions")]
-        public List<Question> GetQuestions()
+        public QuestionsResponse GetQuestions()
         {
-            return _questionsService.GetQuestions(AuthToken());
+            var response = new QuestionsResponse();
+            try
+            {
+                response.Questions = _questionsService.GetQuestions(AuthToken());
+            }
+            catch (Exception ex)
+            {
+                response.Error = "Error: " + ex.Message;
+            }
+
+            return response;
+        }
+        
+        [HttpGet("questions/my")]
+        public QuestionsResponse GetMyQuestions()
+        {
+            var response = new QuestionsResponse();
+            try
+            {
+                response.Questions = _questionsService.GetUserQuestions(AuthToken());
+            }
+            catch (Exception ex)
+            {
+                response.Error = "Error: " + ex.Message;
+            }
+
+            return response;
         }
 
         [HttpGet("questions/{id}")]
@@ -57,9 +83,9 @@ namespace WebApp.Controllers
         }
         
         [HttpPost("questions/{questionId}/vote/{answerId}")]
-        public void Vote(string questionId, string answerId, string userId)
+        public void Vote(string questionId, string answerId)
         {
-            _questionsService.Vote(AuthToken(), answerId, userId);
+            _questionsService.Vote(AuthToken(), questionId, answerId);
         }
 
         private string AuthToken()

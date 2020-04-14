@@ -13,5 +13,7 @@ namespace WebApp.Domain
         public DateTime PublishDate { get; set; }
         
         public List<Answer> Answers { get; set; }
+        
+        public bool Editable { get; set; }
     }
 }

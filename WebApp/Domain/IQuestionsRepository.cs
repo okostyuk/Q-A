@@ -8,6 +8,6 @@ namespace WebApp.Domain
         public Question AddQuestion(Question question);
         public List<Question> FindQuestionsByUser(string userId);
         public Question FindQuestionById(string id);
-        public void AddAnswers(List<Answer> answers);
+        public void AddAnswers(string questionId, List<Answer> answers);
     }
 }

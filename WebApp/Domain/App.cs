@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace WebApp.Domain
 {
@@ -56,7 +57,13 @@ namespace WebApp.Domain
         }
         public List<Question> GetQuestions(string authToken)
         {
-            return _questionsRepository.FindPublicQuestions();
+            var questions = _questionsRepository.FindPublicQuestions();
+            var user = _userRepository.FindUserByToken(authToken);
+            foreach (var question in questions.Where(question => question.UserId.Equals(user.Id)))
+            {
+                question.Editable = true;
+            }
+            return questions;
         }
 
         public Question GetQuestion(string authToken, string id)
