@@ -66,9 +66,22 @@ namespace WebApp.Domain
             return questions;
         }
 
-        public Question GetQuestion(string authToken, string id)
+        public Question GetQuestion(string authToken, string questionId)
         {
-            return _questionsRepository.FindQuestionById(id);
+            var question = _questionsRepository.FindQuestionById(questionId);
+            question.Answers = _questionsRepository.FindAnswersByQuestionId(questionId);
+            var user = _userRepository.FindUserByToken(authToken);
+            var votes = _questionsRepository.FindVotesByUserAndQuestion(user.Id, question.Id);
+            if (question.UserId.Equals(user.Id))
+            {
+                question.Votes = votes;
+            }
+            else
+            {
+                question.Votes = votes.FindAll(v => v.UserId.Equals(user.Id));
+            }
+
+            return question;
         }
 
         public User GetUser(string authToken, string userId)
@@ -83,7 +96,32 @@ namespace WebApp.Domain
 
         public void Vote(string authToken, string questionId, string answerId)
         {
-            throw new NotImplementedException();
+            var user = _userRepository.FindUserByToken(authToken);
+            _questionsRepository.AddVote(questionId, answerId, user.Id);
+        }
+
+        public void AddAnswer(string authToken, string questionId, string answerText)
+        {
+            var user = _userRepository.FindUserByToken(authToken);
+            var question = _questionsRepository.FindQuestionById(questionId);
+
+            if (!question.IsPublished() && !question.UserId.Equals(user.Id))
+            {
+                throw new InvalidDataException("You can`t add answer to other user`s question");
+            }
+
+            if (question.IsPublished() && question.MaxCustomAnswers == 0)
+            {
+                throw new InvalidDataException("Custom answers limit is reached");
+            }
+            
+            var answer = new Answer {QuestionId = questionId, UserId = user.Id, Text = answerText};
+            if (question.IsPublished())
+            {
+                _questionsRepository.DecreaseQuestionCustomAnswers(questionId);
+            }
+            _questionsRepository.AddAnswers(questionId, new List<Answer> {answer});
+
         }
     }
 }

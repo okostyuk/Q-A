@@ -25,36 +25,6 @@ namespace WebApp.Data
             return _connection;
         }
 
-        public User AddUser(string email, string password)
-        {
-            const string sql = "INSERT INTO [q-a].dbo.users (Email, Password) Values (@email, @password); SELECT CAST(SCOPE_IDENTITY() as int);";
-            var userId = GetConnection().Query<int>(sql, new {Email = email, Password = password}).First();
-            return GetConnection().Query<User>(
-                "select * from [q-a].dbo.users where id = @userId",
-                new {UserId=userId}
-            ).FirstOrDefault();
-        }
-
-        public void UpdateUser(User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public User FindUserById(string id)
-        {
-            return GetConnection().Query<User>(
-                "SELECT * FROM [q-a].dbo.users WHERE id = @Id;",new {Id = id})
-                .FirstOrDefault();
-        }
-
-        public User FindUserByEmail(string email)
-        {
-            const string sql = "SELECT * FROM [q-a].dbo.users WHERE email = @Email;";
-            Console.WriteLine(sql);
-            var resultSet = GetConnection().Query<User>(sql, new {Email = email});
-            return resultSet.SingleOrDefault();
-        }
-
         public List<Question> FindPublicQuestions()
         {
             return GetConnection().Query<Question>(
@@ -76,6 +46,13 @@ namespace WebApp.Data
             ).FirstOrDefault();
         }
 
+        public List<Answer> FindAnswersByQuestionId(string id)
+        {
+            return GetConnection().Query<Answer>(
+                "SELECT * from [q-a].dbo.answers WHERE questionId=@Id", new {Id = id}
+            ).AsList();
+        }
+
         public Question AddQuestion(Question question)
         {
             const string sql = @"INSERT INTO [q-a].dbo.questions (title, maxCustomAnswers, expireDate, userId, publishDate)
@@ -88,9 +65,77 @@ namespace WebApp.Data
         {
             foreach (var answer in answers)
             {
-                var sql = "INSERT [q-a].dbo.answers INTO PROCESS_LOGS VALUES (@QuestionId, @UserId, @Text)";        
+                var sql = "INSERT INTO [q-a].dbo.answers (questionId, userId, text) VALUES (@QuestionId, @UserId, @Text)";        
                 GetConnection().Execute(sql, answer);
             }
+        }
+
+        public List<Vote> FindVotesByUserAndQuestion(string userId, string questionId)
+        {
+            return GetConnection().Query<Vote>(
+                "SELECT * from [q-a].dbo.votes WHERE questionId=@QuestionId AND userId=@UserId", 
+                new {QuestionId = questionId, UserId = userId}
+            ).AsList();
+        }
+
+        public void AddVote(string questionId, string answerId, string userId)
+        {
+            GetConnection().Execute(
+                "INSERT into [q-a].dbo.votes values (@QuestionId, @AnswerId, @UserId)", 
+                new {QuestionId = questionId, AnswerId = answerId, UserId = userId });
+        }
+
+        private readonly object _customAnswersWriteLock = new object();
+        public void DecreaseQuestionCustomAnswers(string questionId)
+        {
+            lock (_customAnswersWriteLock)
+            {
+                var question = FindQuestionById(questionId);
+                var maxCustomAnswers = question.MaxCustomAnswers;
+                if (maxCustomAnswers > 0)
+                {
+                    GetConnection().Execute(
+                        "UPDATE [q-a].dbo.answers SET maxCustomAnswer=@MaxCustomAnswers WHERE id=@QuestionId",
+                        new {QuestionId = questionId, MaxCustomAnswers = maxCustomAnswers - 1}
+                    );
+                }
+            }
+        }
+
+
+        // ***********************  USER DATA     *******************************************************
+        
+        
+        
+        
+        public User AddUser(string email, string password)
+        {
+            const string sql = "INSERT INTO [q-a].dbo.users (Email, Password) Values (@email, @password); SELECT CAST(SCOPE_IDENTITY() as int);";
+            var userId = GetConnection().Query<int>(sql, new {Email = email, Password = password}).First();
+            return GetConnection().Query<User>(
+                "select * from [q-a].dbo.users where id = @userId",
+                new {UserId=userId}
+            ).FirstOrDefault();
+        }
+
+        public void UpdateUser(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public User FindUserById(string id)
+        {
+            return GetConnection().Query<User>(
+                    "SELECT * FROM [q-a].dbo.users WHERE id = @Id;",new {Id = id})
+                .FirstOrDefault();
+        }
+
+        public User FindUserByEmail(string email)
+        {
+            const string sql = "SELECT * FROM [q-a].dbo.users WHERE email = @Email;";
+            Console.WriteLine(sql);
+            var resultSet = GetConnection().Query<User>(sql, new {Email = email});
+            return resultSet.SingleOrDefault();
         }
 
         public void AddToken(string userId, string token)
