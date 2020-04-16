@@ -58,9 +58,19 @@ namespace WebApp.Controllers
         }
 
         [HttpGet("questions/{id}")]
-        public Question GetQuestion(string id)
+        public QuestionResponse GetQuestion(string id)
         {
-            return _questionsService.GetQuestion(AuthToken(), id);
+            var response = new QuestionResponse();
+            try
+            {
+                response.Question = _questionsService.GetQuestion(AuthToken(), id);
+            }
+            catch (Exception ex)
+            {
+                response.Error = ex.Message;
+            }
+
+            return response;
         }
         
         [HttpPost("questions/add")]
@@ -70,12 +80,10 @@ namespace WebApp.Controllers
             try
             {
                 _questionsService.CreateQuestion(AuthToken(), question);
-                response.Status = "OK";
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                response.Status = "ERROR";
                 response.Error = ex.Message;
             }
 

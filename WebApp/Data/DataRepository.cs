@@ -28,7 +28,7 @@ namespace WebApp.Data
         public List<Question> FindPublicQuestions()
         {
             return GetConnection().Query<Question>(
-                    "SELECT * FROM [q-a].dbo.questions WHERE publishDate in not NULL;"
+                    "SELECT * FROM [q-a].dbo.questions WHERE publishDate is not NULL;"
                 ).AsList();
         }
 

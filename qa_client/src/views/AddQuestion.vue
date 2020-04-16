@@ -3,15 +3,16 @@
         <h3>New question</h3>
         
         <div id="root">
+            <label class="error" v-bind="error_text"></label>
             <div id="form">
                 <label>
                     Вопрос<br>
-                    <textarea v-model="title" placeholder="Напишите текст вопроса"/>
+                    <textarea v-model="question.title" placeholder="Напишите текст вопроса"/>
                 </label>
                 <br>
                 <label>
                     Дедлайн после которого новые ответы не принимаются<br>
-                    <input v-model="expiresDate" type="date">
+                    <input v-model="question.expiresDate" type="date">
                 </label>
                 <br>
                 <label>
@@ -21,14 +22,14 @@
                 <br>
                 <label style="margin-left: 48px">
                     Cколько максимум можно добавить вариантов ответов<br>
-                    <input id="maxCustomAnswers" v-model="maxCustomAnswers" type="number" v-bind:disabled="!customAnswersAllowed">
+                    <input id="maxCustomAnswers" v-model="question.maxCustomAnswers" type="number" v-bind:disabled="!customAnswersAllowed">
                 </label>
                 <hr>
                 Ответы:
                 <br/>
-                    <div v-for="(answer, index) in answers" v-bind:key="answer.id" >
+                    <div v-for="(answer, index) in question.answers" v-bind:key="answer.id" >
                         <input class="answer" v-model='answer.text' placeholder="Напишите текст ответа"> 
-                        <button @click="deleteAnswer(index)" v-if="answers.length > 0">delete</button>
+                        <button @click="deleteAnswer(index)" v-if="question.answers.length > 0">delete</button>
                     </div>
                 <button @click="addAnswer()">Добавиь вариант ответа</button>
             </div>
@@ -41,29 +42,32 @@
 </template>
 
 <script>
+    import http_service from "../http-service";
     export default {
         name: 'AddQuestion',
         data: function () {
             return {
-                title: '',
-                maxCustomAnswers: 1,
-                expiresDate: '',
+                error_text: "",
                 customAnswersAllowed: false,
-                voteVariantsCount: 1,
-                answers: [
-                    {id: 0, text: ""}
-                ]
+                question: {
+                    title: '',
+                    maxCustomAnswers: 0,
+                    expiresDate: '',
+                    answers: [
+                        {id: 0, text: ""}
+                    ]                
+                },
             }
         },
         methods: {
             deleteAnswer(index) {
-                if (this.answers.length > 1) {
-                    this.answers.splice(index,1);
+                if (this.question.answers.length > 1) {
+                    this.question.answers.splice(index,1);
                 }
             },
             addAnswer() {
-                let _id = this.answers[this.answers.length-1].id + 1;
-                this.answers.push({
+                let _id = this.question.answers[this.question.answers.length-1].id + 1;
+                this.question.answers.push({
                     id: _id,
                     text: ""
                 })
@@ -78,34 +82,16 @@
                 this.addQuestion(null)
             },
             addQuestion(publishDate) {
-                fetch('/api/questions/add',
-                    {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({
-                            title: this.title,
-                            answers: this.answers,
-                            expiresDate: this.expiresDate,
-                            publishDate: publishDate,
-                            maxCustomAnswers: this.customAnswersAllowed ? this.maxCustomAnswers : 0
-                        })
-                    }
-                ).then(
-                    response => {
-                        if (response.status !== 200) {
-                            alert("FAILED: " + response.status)
-                        } else {
-                            response.json().then(json => {
-                                if (json.error !== undefined) {
-                                    alert("ERROR: " + json.error)
-                                } else {
-                                    alert("SUCCESS")
-                                }
-                            })          
-                        }
-                    },
-                    () => {alert("FAILED")}
-                )
+                this.question.publishDate = publishDate;
+                this.question.maxCustomAnswers = this.customAnswersAllowed ? this.maxCustomAnswers : 0;
+                http_service.POST('/api/questions/add', this, this.question);
+            },
+            onSuccess(response) {
+                console.log(response);
+                alert("SUCCESS");
+            },
+            onError(error) {
+                this.error_text = error;
             }
         }
     }

@@ -5,7 +5,7 @@
         <label>{{errorText}}</label>
         <button v-if="errorText" @click="loadQuestion">Try again</button>
         <div v-if="!loading">
-            <label v-if="question">{{question.title}}</label>
+            <label>{{question}}</label>
             <ul v-if="question">
                 <li v-for="answer in question.answers" :key="answer.id">
                     {{ answer.text }}
@@ -17,7 +17,8 @@
 </template>
 
 <script>
-    import Loader from '@/components/Loader'
+    import http_service from "../http-service";
+    import Loader from '../components/Loader'
     export default {
         props: [
             'id'
@@ -44,30 +45,18 @@
             }
         },
         methods: {
-            loadQuestion(/*id*/) {
+            loadQuestion(id) {
                 this.loading = true;
                 this.errorText = null;
-                //fetch('/api/questions/'+id).then(result => result.json())
-                this.mockFetch()
-                    .catch(reason => {this.errorText = reason.error})
-                    .then(json => {
-                        alert("success");
-                        this.loading = false;
-                        if (json === undefined) {
-                            this.errorText = "Unknown error"
-                            this.question = null;
-                        }else if (json.error == null) {
-                            this.errorText = null;
-                            this.question = json;
-                        } else {
-                            this.question = null;
-                            this.errorText = json.error
-                        }
-                    }, () => {
-                        alert("failed");
-                        this.question = null;
-                        this.errorText = "testerror"
-                    })
+                http_service.GET('/api/questions/'+id, this);
+            },
+            onSuccess(json) {
+                this.loading = false;
+                this.question = json.question;
+            },
+            onError(error_text) {
+                this.loading = false;
+                this.errorText = error_text;
             },
             mockFetch() {
                 this.loading = true;
@@ -100,8 +89,7 @@
             Loader
         },
         mounted() {
-            //alert("mounted");
-            this.loadQuestion();
+            this.loadQuestion(this.id);
         }
     }
     

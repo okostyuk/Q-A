@@ -2,7 +2,7 @@
     <div>
         <div v-for="q in questions" :key="q.title"  @click="showQuestion(q.id)">
             <p class="questionItem">
-                {{q.title}}
+                {{q}}
             </p>
         </div>
     </div>

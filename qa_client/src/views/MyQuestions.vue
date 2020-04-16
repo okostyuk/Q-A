@@ -2,53 +2,54 @@
     <div>
         <h2>MyQuestions Page</h2>
         <hr>
-            <label v-if="my_questions.length === 0">Вы не создали ни одного опроса
-                <br>
-                Нажмите кнопку "ADD QUESTION" что бы создать новый вопрос
-            </label>
-            <QuestionsList/>
+        <Loader v-if="loading"/>
+        <br/>
+        <label v-if="my_questions.length === 0">Вы не создали ни одного опроса
+            <br>
+            Нажмите кнопку "ADD QUESTION" что бы создать новый вопрос
+        </label>
+        <QuestionsList v-bind:questions="my_questions"/>
         <hr>
         <button @click="addQuestion()">ADD QUESTION</button>
     </div>
 </template>
 
 <script>
+    import Loader from "../components/Loader";
+    import http_service from "../http-service";
     import QuestionsList from "../components/QuestionsList";
     export default {
         name: "MyQuestions",
         data: function () {
             return {
+                loading: false,
                 my_questions: []
             }
         },
         methods: {
-            showError(error) {
+            onSuccess(result) {
+                this.loading = false;
+                this.error_label = '';
+                this.my_questions = result.questions;
+            },
+            onError(error) {
+                this.loading = false;
                 this.error_label = error;
             },
             loadMyQuestions() {
-                fetch("/questions/my")
-                .then(response => {
-                    if (response.status !== 200) {
-                        this.loading = false;
-                        this.showError("Response error: " + response.status)
-                    } else {
-                        response.json().then(
-                            json => {
-                                if (json.status === 'OK') {
-                                    this.my_questions = json['questions']
-                                } else {
-                                    this.error_label = "Response error: " + response.status
-                                }
-                            })
-                    }
-                })
+                this.loading = true;
+                http_service.GET('/api/questions/my', this);
             },
             addQuestion() {
                 this.$router.push('/add')
             }
         },
         components: {
-            QuestionsList
+            QuestionsList,
+            Loader
+        },
+        mounted() {
+            this.loadMyQuestions();
         }
     }
 </script>

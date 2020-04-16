@@ -1,8 +1,8 @@
 <template>
     <div>
         <h2>{{page_title}}</h2>
-        <input placeholder="Email address" v-model="email"><br>
-        <input placeholder="Password" v-model="password"><br>
+        <input placeholder="Email address" v-model="auth_request.email"><br>
+        <input placeholder="Password" v-model="auth_request.password"><br>
         <p v-if="!loading" class="error">{{error_label}}</p>
         <div><loader v-if="loading"/></div>
         <button v-on:click="login()">Sign In</button> or
@@ -13,7 +13,8 @@
 </template>
 
 <script>
-    import Loader from '@/components/Loader'
+    import http_service from '../http-service.js'
+    import Loader from '../components/Loader'
     export default {
         name: "Login",
         data: function() {
@@ -21,48 +22,33 @@
                 page_title: 'Login page',
                 error_label: '',
                 loading: false,
-                email: '',
-                password: ''
+                auth_request: {
+                    email: 'test1@oleg.com',
+                    password: ''
+                }
             }
         },
         methods: {
+            login() {
+                this.loading = true;
+                this.error_label = '';
+                http_service.POST('/api/auth', this, this.auth_request);
+            },
             register() {
                 this.loading = true;
                 this.error_label = '';
-                setTimeout(() => this.authRequest('/api/auth/signUp'), 1000);
+                http_service.POST('/api/auth/signUp', this, this.auth_request);
             },
-            login() {
-                this.authRequest('/api/auth');
-            },
-            authRequest(path) {
-                this.loading = true;
+            onSuccess(jsonResult) {
+                console.log("onSuccess: " + jsonResult);
+                this.loading = false;
                 this.error_label = '';
-                fetch(path,
-                    {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({
-                            email: this.email,
-                            password: this.password
-                        })
-                    })
-                    .then(response => {
-                        if (response.status !== 200) {
-                            this.loading = false;
-                            this.error_label = "Response error: " + response.status
-                        } else {
-                            response.json().then(
-                                authResponse => {
-                                    if (authResponse.status === 'OK') {
-                                        this.$router.push('/home')
-                                    } else {
-                                        this.loading = false;
-                                        this.error_label = "Response error: " + authResponse.error
-                                    }
-                                }
-                            )
-                        }
-                    });
+                this.$router.push('/home')
+            },
+            onError(errorText) {
+                console.log("onError: " + errorText);
+                this.loading = false;
+                this.error_label = errorText;
             },
         },
         components: {
@@ -72,7 +58,3 @@
         }
     }
 </script>
-
-<style scoped>
-    .error {color: orangered}
-</style>

@@ -2,24 +2,31 @@
     <div>
         <h2>Main page</h2>
         <hr>
-        <label v-if="public_questions.length === 0">Еще никто не создал вопросов, будьте первым!</label>
-        <QuestionsList v-else v-bind:questions="public_questions"/>
+        <label v-if="!loading && questions.length === 0">Еще никто не создал вопросов, будьте первым!</label>
+        <QuestionsList v-else v-bind:questions="questions"/>
+        <br/>
+        <label class="error">{{error.text}}</label>
+        <br/>
+        <Loader v-if="loading"/>
         <hr>
         <button @click="addQuestion">СОЗДАТЬ ОПРОС</button>
+        <button @click="loadQuestions">REFRESH</button>
     </div>
 </template>
 
 <script>
+    import Loader from "../components/Loader"
+    import http_service from "../http-service";
     import QuestionsList from "../components/QuestionsList";
     export default {
         name: "Home",
         data: function () {
             return {
-                public_questions: [
-                    {id: 1, title: "q1"},
-                    {id: 2, title: "q2"},
-                    {id: 3, title: "q3"},
-                    {id: 4, title: "q4"},
+                loading: false,
+                error: {
+                    text: ""
+                },
+                questions: [
                 ]
             }
         },
@@ -28,11 +35,24 @@
                 this.$router.push('/add')
             },
             loadQuestions() {
-                fetch('/api/questions')
+                this.loading = true;
+                http_service.GET('/api/questions', this)
+            },
+            onSuccess(response) {
+                console.log("home onSuccess()");
+                this.error_label = "";
+                this.loading = false;
+                this.questions = response.questions;
+            },
+            onError(errorText) {
+                console.log("home onError()");
+                this.loading = false;
+                this.error.text = errorText;
             }
         },
         components: {
-            QuestionsList
+            QuestionsList,
+            Loader
         },
         mounted() {
             this.loadQuestions();

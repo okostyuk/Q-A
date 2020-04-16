@@ -32,16 +32,16 @@ namespace WebApp.Controllers
                 Console.WriteLine(HttpContext.User.Identity.ToString());
                 var authToken = _authService.SignUp(authRequest.Email, authRequest.Password);
                 Response.Cookies.Append(AuthTokenCookieKey, authToken);
-                return new AuthResponse {Status = "OK"};
+                return new AuthResponse();
             }
             catch (InvalidDataException ex)
             {
-                return new AuthResponse { Status = "Error", Error = ex.Message};
+                return new AuthResponse { Error = ex.Message};
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                return new AuthResponse { Status = "Error", Error = "Internal error, try back shortly"};
+                return new AuthResponse { Error = "Internal error, try back shortly"};
             }
         }
         
@@ -52,16 +52,16 @@ namespace WebApp.Controllers
             {
                 var authToken = _authService.SignIn(authRequest.Email, authRequest.Password);
                 Response.Cookies.Append(AuthTokenCookieKey, authToken);
-                return new AuthResponse() { Status = "OK" };
+                return new AuthResponse();
             }
             catch (InvalidDataException ex)
             {
-                return new AuthResponse() { Status = "Error", Error = ex.Message };
+                return new AuthResponse { Error = ex.Message };
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                return new AuthResponse() { Status = "Error", Error = "Internal error, try back shortly"};
+                return new AuthResponse { Error = "Internal error, try back shortly"};
             }
         }
     }

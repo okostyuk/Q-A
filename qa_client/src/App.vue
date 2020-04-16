@@ -67,4 +67,6 @@ export default {
     border:1px solid var(--primary-color);
     box-shadow: 0 0 4px var(--primary-color);
   }
+
+  .error {color: orangered}
 </style>
