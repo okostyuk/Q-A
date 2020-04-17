@@ -23,24 +23,26 @@ export default {
 
 <style>
   :root {
-    --primary-color-transparent: rgba(65, 184, 131, 0.2);
-    --primary-color: #41B883;
-    --secondary-color: #35495E;
+    --accent-color-transparent: rgba(65, 184, 131, 0.2);
+    --accent-color: #41B883;
+    --secondary-accent-color: #35495E;
+    --primary-color: rgba(0, 0, 0, 0.87);
+    --secondary-color: rgba(0, 0, 0, 0.54);
     --placeholder-color: #cfcfcf
   }
   
   #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
+    font-family: Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: var(--secondary-color);
+    color: var(--primary-color);
     margin-top: 60px;
     font-size: 20px;
   }
 
   label {
-    color: var(--secondary-color);
+    color: var(--primary-color);
     font-size: 20px;
   }
 
@@ -54,18 +56,25 @@ export default {
   }
 
   button {
+    border: none;
+    border-radius: 2px;
+    font-weight: 500;
     margin: 4px;
-    padding: 12px; 
-    background: var(--primary-color); 
-    color: white; 
-    font-size: 20px;
+    padding-left: 16px;
+    padding-right: 16px;
+    height: 48px;
+    background: var(--secondary-accent-color);
+    color: white;
+    font-size: 16px;
   }
-  
+
+  button:hover{background-color: var(--accent-color);}
+
   textarea:focus,
   input:focus {
     outline: none !important;
-    border:1px solid var(--primary-color);
-    box-shadow: 0 0 4px var(--primary-color);
+    border:1px solid var(--accent-color);
+    box-shadow: 0 0 4px var(--accent-color-transparent);
   }
 
   .error {color: orangered}

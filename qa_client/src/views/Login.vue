@@ -5,8 +5,8 @@
         <input placeholder="Password" v-model="auth_request.password"><br>
         <p v-if="!loading" class="error">{{error_label}}</p>
         <div><loader v-if="loading"/></div>
-        <button v-on:click="login()">Sign In</button> or
-        <button v-on:click="register()">Register</button>
+        <button v-on:click="login()">SIGN IN</button> or
+        <button v-on:click="register()">REGISTER</button>
         <br/>
         <br/>
     </div>

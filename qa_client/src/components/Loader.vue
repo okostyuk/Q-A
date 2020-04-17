@@ -4,7 +4,6 @@
 
 <style scoped>
     .lds-spinner {
-        color: var(--primary-color);
         display: inline-block;
         position: relative;
         width: 80px;
@@ -23,7 +22,7 @@
         width: 6px;
         height: 18px;
         border-radius: 20%;
-        background: var(--primary-color);
+        background: var(--accent-color);
     }
     .lds-spinner div:nth-child(1) {
         transform: rotate(0deg);
