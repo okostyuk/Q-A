@@ -22,33 +22,36 @@ export default {
 </script>
 
 <style>
-  :root {
-    --accent-color-transparent: rgba(65, 184, 131, 0.2);
-    --accent-color: #41B883;
-    --secondary-accent-color: #35495E;
-    --primary-color: rgba(0, 0, 0, 0.87);
-    --secondary-color: rgba(0, 0, 0, 0.54);
-    --placeholder-color: #cfcfcf
-  }
   
   #app {
+    --color-accent-transparent: rgba(65, 184, 131, 0.2);
+    --color-accent: #41B883;
+    --color-accent-secondary: #35495E;
+    --color-primary: rgba(0, 0, 0, 0.87);
+    --color-secondary: rgba(0, 0, 0, 0.54);
+    --color-bg: rgb(250, 250, 250);
+    --color-placeholder: #cfcfcf;
+    --font-size-primary: 20px;
+    --font-size-secondary: 16px;
+    --font-size-info: 14px;
+    
     font-family: Roboto, sans-serif;
+    font-size: var(--font-size-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: var(--primary-color);
+    color: var(--color-primary);
     margin-top: 60px;
-    font-size: 20px;
   }
 
   label {
-    color: var(--primary-color);
-    font-size: 20px;
+    color: var(--color-primary);
+    //font-size: 20px;
   }
 
   textarea,
   input {
-    font-size: 20px;
+    font-size: var(--font-size-primary);
     min-width: 200px;
     padding: 8px;
     border: 1px solid #35495E;
@@ -63,18 +66,23 @@ export default {
     padding-left: 16px;
     padding-right: 16px;
     height: 48px;
-    background: var(--secondary-accent-color);
+    background: var(--color-accent-secondary);
     color: white;
     font-size: 16px;
   }
 
-  button:hover{background-color: var(--accent-color);}
+  button:hover{background-color: var(--color-accent);}
+
+  button:disabled {
+    background: var(--color-accent-transparent);
+  }
+
 
   textarea:focus,
   input:focus {
     outline: none !important;
-    border:1px solid var(--accent-color);
-    box-shadow: 0 0 4px var(--accent-color-transparent);
+    border:1px solid var(--color-accent);
+    box-shadow: 0 0 4px var(--color-accent-transparent);
   }
 
   .error {color: orangered}

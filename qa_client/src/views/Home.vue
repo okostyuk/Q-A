@@ -1,14 +1,12 @@
 <template>
     <div>
         <h2>Main page</h2>
-        <hr>
         <label v-if="!loading && questions.length === 0">Еще никто не создал вопросов, будьте первым!</label>
         <QuestionsList v-else v-bind:questions="questions"/>
         <br/>
-        <label class="error">{{error.text}}</label>
+        <label v-if="error.text.length > 0" class="error">{{error.text}}</label>
         <br/>
         <Loader v-if="loading"/>
-        <hr>
         <button @click="addQuestion">СОЗДАТЬ ОПРОС</button>
         <button @click="loadQuestions">REFRESH</button>
     </div>
@@ -55,7 +53,11 @@
             Loader
         },
         mounted() {
-            this.loadQuestions();
+            this.questions = [
+                {title: "q1", subtitle: "user1", info: 55},
+                {title: "q2", subtitle: "user2", info: 9}
+            ];
+            //this.loadQuestions();
         }
     }
 </script>

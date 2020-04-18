@@ -1,12 +1,12 @@
 <template>
     <div>
         <h2>{{page_title}}</h2>
-        <input placeholder="Email address" v-model="auth_request.email"><br>
-        <input placeholder="Password" v-model="auth_request.password"><br>
+        <input v-bind:disabled="loading" placeholder="Email address" v-model="auth_request.email"><br>
+        <input v-bind:disabled="loading" placeholder="Password" v-model="auth_request.password"><br>
         <p v-if="!loading" class="error">{{error_label}}</p>
         <div><loader v-if="loading"/></div>
-        <button v-on:click="login()">SIGN IN</button> or
-        <button v-on:click="register()">REGISTER</button>
+        <button v-bind:disabled="loading" v-on:click="login()">SIGN IN</button> or
+        <button v-bind:disabled="loading" v-on:click="register()">REGISTER</button>
         <br/>
         <br/>
     </div>

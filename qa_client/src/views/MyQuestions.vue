@@ -8,7 +8,7 @@
             <br>
             Нажмите кнопку "ADD QUESTION" что бы создать новый вопрос
         </label>
-        <QuestionsList v-bind:questions="my_questions"/>
+        <QuestionsList v-else v-bind:questions="my_questions"/>
         <hr>
         <button @click="addQuestion()">ADD QUESTION</button>
     </div>

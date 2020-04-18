@@ -1,11 +1,12 @@
 const http_service = {
+    baseUrl: "https://192.168.1.128:5001",
     GET(path, listener) {
-        setTimeout(() => this.proceed(fetch(path), listener), 500);
+        setTimeout(() => this.proceed(fetch(this.baseUrl + path), listener), 500);
     },
     POST(path, listener, bodyObject) {
         setTimeout(() =>
         this.proceed(
-            fetch(path, {
+            fetch(this.baseUrl + path, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(bodyObject)}),
@@ -29,7 +30,11 @@ const http_service = {
                     }
                 )
             }
-        })
+        },
+            reject => {
+                console.log(reject);
+                listener.onError(reject);
+            })
     }
 };
 
