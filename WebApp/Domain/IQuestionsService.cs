@@ -9,5 +9,6 @@ namespace WebApp.Domain
         public List<Question> GetUserQuestions(string authToken);
         public Question GetQuestion(string authToken, string questionId);
         public void Vote(string authToken, string questionId, string answerId);
+        void DeleteQuestion(string authToken, string questionId);
     }
 }

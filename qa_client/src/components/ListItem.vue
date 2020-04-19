@@ -1,17 +1,17 @@
 <template>
     <div class="item">
         <span class="item-text">
-            <span class="title">{{item.title}}</span>
-            <span class="secondary">{{item.subtitle}}</span>
+            <span class="title">{{question.title}}</span>
+            <span class="secondary">{{question.userId}}</span>
         </span>
-        <span class="info">{{item.info}}</span>
+        <span class="info">{{question.publishDate}}</span>
     </div>
 </template>
 
 <script>
     export default {
         name: "ListItem",
-        props: ['item']
+        props: ['question']
     }
 </script>
 
@@ -29,10 +29,14 @@
     .item:hover{background-color: var(--color-accent-transparent);}
 
     .item-text {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
         align-self: flex-start;
     }
 
     .title {
+        align-self: flex-start;
         font-size: var(--font-size-primary);
         margin-bottom: -20px;
         display: block;
@@ -58,6 +62,7 @@
     }
 
     .secondary {
+        align-self: flex-start;
         display: block;
         font-size: var(--font-size-secondary);
         color: var(--color-secondary)

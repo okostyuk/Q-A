@@ -23,6 +23,8 @@ namespace WebApp.Controllers
         public QuestionsController(IQuestionsService questionsService)
         {
             _questionsService = questionsService;
+            
+            IMapper<,>
         }
 
         [HttpGet("questions")]
@@ -94,6 +96,13 @@ namespace WebApp.Controllers
         public void Vote(string questionId, string answerId)
         {
             _questionsService.Vote(AuthToken(), questionId, answerId);
+        }
+
+        [HttpDelete("questions/{questionId}")]
+        public Response DeleteQuestion(string questionId)
+        { 
+            _questionsService.DeleteQuestion(AuthToken(), questionId);
+            return new Response();
         }
 
         private string AuthToken()

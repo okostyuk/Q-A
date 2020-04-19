@@ -3,15 +3,18 @@
         <h2>Question {{id}} Page</h2>
         <loader v-if="loading"/><br/>
         <label>{{errorText}}</label>
+        <button @click="deleteQuestion">DELETE QUESTION</button>
         <button v-if="errorText" @click="loadQuestion">Try again</button>
         <div v-if="!loading">
             <label>{{question}}</label>
+            <h3>{{question.title}}</h3>
             <ul v-if="question">
                 <li v-for="answer in question.answers" :key="answer.id">
                     {{ answer.text }}
                     <button>Vote</button>
                 </li>
             </ul>
+            
         </div>
     </div>
 </template>
@@ -45,10 +48,18 @@
             }
         },
         methods: {
-            loadQuestion(id) {
+            deleteQuestion() {
+                const router = this.$router;
+                http_service.DELETE('/api/questions/'+this.id, {
+                    onSuccess() {
+                        router.push({ name: '/home'});
+                    }
+                });
+            },
+            loadQuestion() {
                 this.loading = true;
                 this.errorText = null;
-                http_service.GET('/api/questions/'+id, this);
+                http_service.GET('/api/questions/'+this.id, this);
             },
             onSuccess(json) {
                 this.loading = false;
@@ -89,7 +100,7 @@
             Loader
         },
         mounted() {
-            this.loadQuestion(this.id);
+            this.loadQuestion();
         }
     }
     

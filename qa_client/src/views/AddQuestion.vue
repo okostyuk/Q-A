@@ -3,7 +3,7 @@
         <h3>New question</h3>
         
         <div id="root">
-            <label class="error" v-bind="error_text"></label>
+            <label class="error">{{error_text}}</label>
             <div id="form">
                 <label>
                     Вопрос<br>
@@ -12,7 +12,7 @@
                 <br>
                 <label>
                     Дедлайн после которого новые ответы не принимаются<br>
-                    <input v-model="question.expiresDate" type="date">
+                    <input v-model="question.expiresDateUser" type="date">
                 </label>
                 <br>
                 <label>
@@ -22,7 +22,7 @@
                 <br>
                 <label style="margin-left: 48px">
                     Cколько максимум можно добавить вариантов ответов<br>
-                    <input id="maxCustomAnswers" v-model="question.maxCustomAnswers" type="number" v-bind:disabled="!customAnswersAllowed">
+                    <input id="maxCustomAnswers" v-model="maxCustomAnswers" type="number" v-bind:disabled="!customAnswersAllowed">
                 </label>
                 <hr>
                 Ответы:
@@ -47,13 +47,14 @@
         name: 'AddQuestion',
         data: function () {
             return {
-                error_text: "",
+                error_text: "test",
                 customAnswersAllowed: false,
+                maxCustomAnswers: 1,
                 question: {
-                    title: '',
-                    maxCustomAnswers: 0,
-                    expiresDate: '',
-                    answers: [
+                    clientTitle: '',
+                    clientMaxCustomAnswers: 0,
+                    clientExpiresDate: '',
+                    clientAnswers: [
                         {id: 0, text: ""}
                     ]                
                 },
@@ -76,14 +77,18 @@
                 window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/')
             },
             publish() {
-                this.addQuestion(new Date())
+                this.addQuestion(true)
             },
             save() {
-                this.addQuestion(null)
+                this.addQuestion(false)
             },
-            addQuestion(publishDate) {
-                this.question.publishDate = publishDate;
-                this.question.maxCustomAnswers = this.customAnswersAllowed ? this.maxCustomAnswers : 0;
+            addQuestion(publish) {
+                this.question.clientPublish = publish;
+                if (this.customAnswersAllowed) {
+                    this.question.clientMaxCustomAnswers = 0;    
+                } else {
+                    this.question.clientMaxCustomAnswers = this.maxCustomAnswers;
+                }
                 http_service.POST('/api/questions/add', this, this.question);
             },
             onSuccess(response) {
@@ -91,6 +96,7 @@
                 alert("SUCCESS");
             },
             onError(error) {
+                console.log(error);
                 this.error_text = error;
             }
         }

@@ -1,7 +1,14 @@
 const http_service = {
-    baseUrl: "https://192.168.1.128:5001",
+    baseUrl: "",
+    DELETE(path, listener) {
+        this.proceed(fetch(
+            this.baseUrl + path, 
+            {method: 'DELETE'}),
+            listener
+        )
+    },
     GET(path, listener) {
-        setTimeout(() => this.proceed(fetch(this.baseUrl + path), listener), 500);
+        setTimeout(() => this.proceed(fetch(this.baseUrl + path), listener), 250);
     },
     POST(path, listener, bodyObject) {
         setTimeout(() =>
@@ -11,7 +18,7 @@ const http_service = {
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(bodyObject)}),
             listener
-        ), 1000);
+        ), 250);
     },
     proceed(promise, listener) {
         promise.then(response => {

@@ -13,5 +13,7 @@ namespace WebApp.Domain
         public List<Vote> FindVotesByUserAndQuestion(string userId, string questionId);
         void AddVote(string questionId, string answerId, string userId);
         void DecreaseQuestionCustomAnswers(string questionId);
+        List<Vote> FindVotesByQuestionId(string questionId);
+        void DeleteQuestion(string questionId);
     }
 }

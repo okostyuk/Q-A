@@ -27,23 +27,39 @@ namespace WebApp.Data
 
         public List<Question> FindPublicQuestions()
         {
-            return GetConnection().Query<Question>(
+            var questions = GetConnection().Query<Question>(
                     "SELECT * FROM [q-a].dbo.questions WHERE publishDate is not NULL;"
                 ).AsList();
+            foreach (var question in questions)
+            {
+                question.Answers = FindAnswersByQuestionId(question.Id);
+            }
+            return questions;
         }
 
         public List<Question> FindQuestionsByUser(string userId)
         {
-            return GetConnection().Query<Question>(
+            var questions=  GetConnection().Query<Question>(
                 "SELECT * FROM [q-a].dbo.questions WHERE userId = @UserId;", new{UserId = userId}
             ).AsList();
+            foreach (var question in questions)
+            {
+                question.Answers = FindAnswersByQuestionId(question.Id);
+            }
+            return questions;
         }
 
         public Question FindQuestionById(string id)
         {
-            return GetConnection().Query<Question>(
+            var question = GetConnection().Query<Question>(
                 "SELECT * from [q-a].dbo.questions WHERE id=@Id", new {Id = id}
             ).FirstOrDefault();
+
+            if (question != null)
+            {
+                question.Answers = FindAnswersByQuestionId(question.Id);
+            }
+            return question;
         }
 
         public List<Answer> FindAnswersByQuestionId(string id)
@@ -53,12 +69,35 @@ namespace WebApp.Data
             ).AsList();
         }
 
+        public void DeleteQuestion(string questionId)
+        {
+            GetConnection().Execute(
+                @"DELETE from [q-a].dbo.votes where questionId=@QuestionId;
+                      DELETE from [q-a].dbo.answers where questionId=@QuestionId;
+                      DELETE from [q-a].dbo.questions where id=@QuestionId;",
+                new {QuestionID = questionId});
+        }
+
         public Question AddQuestion(Question question)
         {
-            const string sql = @"INSERT INTO [q-a].dbo.questions (title, maxCustomAnswers, expireDate, userId, publishDate)
-            VALUES  (@Title, @MaxCustomAnswers, @ExpiresDate, @UserId, @PublishDate);";
+            const string sql = @"INSERT INTO [q-a].dbo.questions (title, maxCustomAnswers, expireDate, userId, publishDate) 
+            VALUES (@Title, @MaxCustomAnswers, @ExpiresDate, @UserId, @PublishDate);";
             GetConnection().Execute(sql, question);
-            return null;
+
+            var id= GetConnection().ExecuteScalar("SELECT IDENT_CURRENT('questions')");
+            string questionId = "" + id; //= GetConnection().Query<int>("select * from (SELECT IDENT_CURRENT('questions') as I) as IC;").First() + "";
+            foreach (var answer in question.Answers)
+            {
+                answer.QuestionId = questionId;
+                answer.UserId = question.UserId;
+            }
+            if (question.Answers != null)
+            {
+                AddAnswers(questionId, question.Answers);
+            }
+
+            question.Id = questionId; 
+            return question;
         }
 
         public void AddAnswers(string questionId, List<Answer> answers)
@@ -68,6 +107,14 @@ namespace WebApp.Data
                 var sql = "INSERT INTO [q-a].dbo.answers (questionId, userId, text) VALUES (@QuestionId, @UserId, @Text)";        
                 GetConnection().Execute(sql, answer);
             }
+        }
+        
+        public List<Vote> FindVotesByQuestionId(string questionId)
+        {
+            return GetConnection().Query<Vote>(
+                "SELECT * from [q-a].dbo.votes WHERE questionId=@QuestionId", 
+                new {QuestionId = questionId}
+            ).AsList();
         }
 
         public List<Vote> FindVotesByUserAndQuestion(string userId, string questionId)

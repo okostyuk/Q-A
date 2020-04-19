@@ -1,7 +1,10 @@
 <template>
     <div style="background: var(--color-bg); padding: 24px">
         <div class="list">
-            <ListItem v-for="q in questions" :key="q.title" v-bind:item="q"/>
+            <div @click="showQuestion(q.id)" v-for="q in questions" :key="q.id" >
+                <ListItem v-bind:question="q"/>
+                <div style="font-size: 10px">{{q}}</div>
+            </div>
         </div>
     </div>
 </template>

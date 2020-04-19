@@ -47,7 +47,8 @@ namespace WebApp.Domain
         {
             var user = _userRepository.FindUserByToken(authToken);
             question.UserId = user.Id;
-            return _questionsRepository.AddQuestion(question);
+            var savedQuestion = _questionsRepository.AddQuestion(question);
+            return savedQuestion;
         }
 
         public List<Question> GetUserQuestions(string authToken)
@@ -71,15 +72,10 @@ namespace WebApp.Domain
             var question = _questionsRepository.FindQuestionById(questionId);
             question.Answers = _questionsRepository.FindAnswersByQuestionId(questionId);
             var user = _userRepository.FindUserByToken(authToken);
-            var votes = _questionsRepository.FindVotesByUserAndQuestion(user.Id, question.Id);
-            if (question.UserId.Equals(user.Id))
-            {
-                question.Votes = votes;
-            }
-            else
-            {
-                question.Votes = votes.FindAll(v => v.UserId.Equals(user.Id));
-            }
+            var votes = _questionsRepository.FindVotesByQuestionId(question.Id);
+            question.Votes = question.UserId.Equals(user.Id) 
+                ? votes 
+                : votes.FindAll(v => v.UserId.Equals(user.Id));
 
             return question;
         }
@@ -100,7 +96,7 @@ namespace WebApp.Domain
             _questionsRepository.AddVote(questionId, answerId, user.Id);
         }
 
-        public void AddAnswer(string authToken, string questionId, string answerText)
+        public Question AddAnswer(string authToken, string questionId, string answerText)
         {
             var user = _userRepository.FindUserByToken(authToken);
             var question = _questionsRepository.FindQuestionById(questionId);
@@ -122,6 +118,14 @@ namespace WebApp.Domain
             }
             _questionsRepository.AddAnswers(questionId, new List<Answer> {answer});
 
+            question.Answers = _questionsRepository.FindAnswersByQuestionId(questionId);
+            
+            return question;
+        }
+
+        public void DeleteQuestion(string authToken, string questionId)
+        {
+            _questionsRepository.DeleteQuestion(questionId);
         }
     }
 }

@@ -1,5 +1,8 @@
 <template>
-  <div id="app">
+  <div id="app" v-bind:class="theme">
+    <div style="text-align: right; width: 720px; margin-left: auto; margin-right: auto">    
+      <a @click="switchTheme" href="#">{{theme}}</a>
+    </div>
     <img alt="Vue logo" src="./assets/logo.png" style="transform: scaleY(-1)">
     <h1>Q&A Application</h1>
     <navigationBar/>
@@ -13,6 +16,16 @@
 export default {
   name: 'App',
   navigationBar: NavigationBar,
+  data: function () {
+    return {
+      theme: "light"
+    }
+  },
+  methods: {
+    switchTheme() {
+      this.theme = (this.theme === "dark" ? "light" : "dark")
+    }
+  },
   components: {
     NavigationBar
   },
@@ -41,7 +54,14 @@ export default {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: var(--color-primary);
-    margin-top: 60px;
+    padding-top: 60px;
+  }
+  
+  .dark {
+    background: slategray;
+  }
+  .light {
+    background: #fafafa;
   }
 
   label {
