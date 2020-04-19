@@ -7,12 +7,12 @@
             <div id="form">
                 <label>
                     Вопрос<br>
-                    <textarea v-model="question.title" placeholder="Напишите текст вопроса"/>
+                    <textarea v-model="question.clientTitle" placeholder="Напишите текст вопроса"/>
                 </label>
                 <br>
                 <label>
                     Дедлайн после которого новые ответы не принимаются<br>
-                    <input v-model="question.expiresDateUser" type="date">
+                    <input v-model="question.clientExpiresDate" type="date">
                 </label>
                 <br>
                 <label>
@@ -27,9 +27,9 @@
                 <hr>
                 Ответы:
                 <br/>
-                    <div v-for="(answer, index) in question.answers" v-bind:key="answer.id" >
+                    <div v-for="(answer, index) in question.clientAnswers" v-bind:key="answer.id" >
                         <input class="answer" v-model='answer.text' placeholder="Напишите текст ответа"> 
-                        <button @click="deleteAnswer(index)" v-if="question.answers.length > 0">delete</button>
+                        <button @click="deleteAnswer(index)" v-if="question.clientAnswers.length > 0">delete</button>
                     </div>
                 <button @click="addAnswer()">Добавиь вариант ответа</button>
             </div>
@@ -62,13 +62,13 @@
         },
         methods: {
             deleteAnswer(index) {
-                if (this.question.answers.length > 1) {
-                    this.question.answers.splice(index,1);
+                if (this.question.clientAnswers.length > 1) {
+                    this.question.clientAnswers.splice(index,1);
                 }
             },
             addAnswer() {
-                let _id = this.question.answers[this.question.answers.length-1].id + 1;
-                this.question.answers.push({
+                let _id = this.question.clientAnswers[this.question.clientAnswers.length-1].id + 1;
+                this.question.clientAnswers.push({
                     id: _id,
                     text: ""
                 })

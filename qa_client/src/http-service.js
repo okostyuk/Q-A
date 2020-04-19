@@ -11,6 +11,7 @@ const http_service = {
         setTimeout(() => this.proceed(fetch(this.baseUrl + path), listener), 250);
     },
     POST(path, listener, bodyObject) {
+        console.log(JSON.stringify(bodyObject));
         setTimeout(() =>
         this.proceed(
             fetch(this.baseUrl + path, {
@@ -23,7 +24,7 @@ const http_service = {
     proceed(promise, listener) {
         promise.then(response => {
             if (response.status !== 200) {
-                listener.onError("Response error: " + response.status);
+                response.json().then(jsonResponse => listener.onError("Response error: " + response.status + " " + JSON.stringify(jsonResponse)));
             } else {
                 response.json().then(
                     jsonResponse => {

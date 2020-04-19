@@ -19,12 +19,12 @@ namespace WebApp.Controllers
     public class QuestionsController : ControllerBase
     {
         private readonly IQuestionsService _questionsService;
+        private readonly IMapper<Question, Question> _questionsMapper;
         
         public QuestionsController(IQuestionsService questionsService)
         {
             _questionsService = questionsService;
-            
-            IMapper<,>
+            _questionsMapper = new QuestionsMapper();
         }
 
         [HttpGet("questions")]
@@ -60,7 +60,7 @@ namespace WebApp.Controllers
         }
 
         [HttpGet("questions/{id}")]
-        public QuestionResponse GetQuestion(string id)
+        public QuestionResponse GetQuestion(int id)
         {
             var response = new QuestionResponse();
             try
@@ -81,7 +81,7 @@ namespace WebApp.Controllers
             var response = new QuestionResponse();
             try
             {
-                _questionsService.CreateQuestion(AuthToken(), question);
+                _questionsService.CreateQuestion(AuthToken(), _questionsMapper.Map(question));
             }
             catch (Exception ex)
             {
@@ -93,13 +93,13 @@ namespace WebApp.Controllers
         }
         
         [HttpPost("questions/{questionId}/vote/{answerId}")]
-        public void Vote(string questionId, string answerId)
+        public void Vote(int questionId, int answerId)
         {
             _questionsService.Vote(AuthToken(), questionId, answerId);
         }
 
         [HttpDelete("questions/{questionId}")]
-        public Response DeleteQuestion(string questionId)
+        public Response DeleteQuestion(int questionId)
         { 
             _questionsService.DeleteQuestion(AuthToken(), questionId);
             return new Response();

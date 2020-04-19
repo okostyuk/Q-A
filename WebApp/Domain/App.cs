@@ -67,7 +67,7 @@ namespace WebApp.Domain
             return questions;
         }
 
-        public Question GetQuestion(string authToken, string questionId)
+        public Question GetQuestion(string authToken, int questionId)
         {
             var question = _questionsRepository.FindQuestionById(questionId);
             question.Answers = _questionsRepository.FindAnswersByQuestionId(questionId);
@@ -80,7 +80,7 @@ namespace WebApp.Domain
             return question;
         }
 
-        public User GetUser(string authToken, string userId)
+        public User GetUser(string authToken, int userId)
         {
             throw new NotImplementedException();
         }
@@ -90,13 +90,13 @@ namespace WebApp.Domain
             throw new NotImplementedException();
         }
 
-        public void Vote(string authToken, string questionId, string answerId)
+        public void Vote(string authToken, int questionId, int answerId)
         {
             var user = _userRepository.FindUserByToken(authToken);
             _questionsRepository.AddVote(questionId, answerId, user.Id);
         }
 
-        public Question AddAnswer(string authToken, string questionId, string answerText)
+        public Question AddAnswer(string authToken, int questionId, string answerText)
         {
             var user = _userRepository.FindUserByToken(authToken);
             var question = _questionsRepository.FindQuestionById(questionId);
@@ -123,7 +123,7 @@ namespace WebApp.Domain
             return question;
         }
 
-        public void DeleteQuestion(string authToken, string questionId)
+        public void DeleteQuestion(string authToken, int questionId)
         {
             _questionsRepository.DeleteQuestion(questionId);
         }

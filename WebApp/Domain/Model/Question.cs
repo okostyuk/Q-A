@@ -1,23 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace WebApp.Domain
 {
     public class Question
     {
-        public string Id { get; set; }
-        public string UserId { get; set; }
+        //[JsonIgnore]
+        public int Id { get; set; }
+        public int UserId { get; set; }
 
         public string Title { get; set; }
         public string ClientTitle { get; set; }
 
         public int MaxCustomAnswers { get; set; }
-        public string ClientMaxCustomAnswers { get; set; }
+        public int ClientMaxCustomAnswers { get; set; }
 
-        public DateTime ExpiresDate { get; set; }
+        //[JsonIgnore]
+        public DateTime? ExpiresDate { get; set; }
         public string ClientExpiresDate { get; set; }
 
-        public DateTime PublishDate { get; set; }
+        //[JsonIgnore]
+        public DateTime? PublishDate { get; set; }
         
         public List<Answer> Answers { get; set; }
         public List<Answer> ClientAnswers { get; set; }
@@ -29,7 +33,7 @@ namespace WebApp.Domain
 
         public bool IsPublished()
         {
-            return PublishDate != null; //why always not null????
+            return PublishDate != null;
         }
     }
 }

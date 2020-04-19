@@ -6,14 +6,14 @@ namespace WebApp.Domain
     {
         public List<Question> FindPublicQuestions();
         public Question AddQuestion(Question question);
-        public List<Question> FindQuestionsByUser(string userId);
-        public Question FindQuestionById(string id);
-        public List<Answer> FindAnswersByQuestionId(string questionId);
-        public void AddAnswers(string questionId, List<Answer> answers);
-        public List<Vote> FindVotesByUserAndQuestion(string userId, string questionId);
-        void AddVote(string questionId, string answerId, string userId);
-        void DecreaseQuestionCustomAnswers(string questionId);
-        List<Vote> FindVotesByQuestionId(string questionId);
-        void DeleteQuestion(string questionId);
+        public List<Question> FindQuestionsByUser(int userId);
+        public Question FindQuestionById(int id);
+        public List<Answer> FindAnswersByQuestionId(int questionId);
+        public void AddAnswers(int questionId, List<Answer> answers);
+        public List<Vote> FindVotesByUserAndQuestion(int userId, int questionId);
+        void AddVote(int questionId, int answerId, int userId);
+        void DecreaseQuestionCustomAnswers(int questionId);
+        List<Vote> FindVotesByQuestionId(int questionId);
+        void DeleteQuestion(int questionId);
     }
 }
