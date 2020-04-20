@@ -1,9 +1,10 @@
 <template>
     <div>
         <h2>Main page</h2>
-        <button @click="addQuestion">СОЗДАТЬ ОПРОС</button>
-        <button @click="loadQuestions">REFRESH</button>
-        <br/>
+        <div class="content" style="text-align: right">
+            <button @click="addQuestion">СОЗДАТЬ ОПРОС</button>
+            <button @click="loadQuestions">REFRESH</button>
+        </div>
         <Loader v-if="loading"/>
         <label v-if="!loading && questions.length === 0">Еще никто не создал вопросов, будьте первым!</label>
         <QuestionsList v-else v-bind:questions="questions"/>
@@ -39,7 +40,7 @@
             onSuccess(response) {
                 this.error.text = "";
                 this.loading = false;
-                this.questions = response.questions;
+                this.questions = response;
             },
             onError(errorText) {
                 this.loading = false;

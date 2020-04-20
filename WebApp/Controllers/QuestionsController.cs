@@ -33,7 +33,7 @@ namespace WebApp.Controllers
             var response = new QuestionsResponse();
             try
             {
-                response.Questions = _questionsService.GetQuestions(AuthToken());
+                response.Result = _questionsService.GetQuestions(AuthToken());
             }
             catch (Exception ex)
             {
@@ -49,7 +49,7 @@ namespace WebApp.Controllers
             var response = new QuestionsResponse();
             try
             {
-                response.Questions = _questionsService.GetUserQuestions(AuthToken());
+                response.Result = _questionsService.GetUserQuestions(AuthToken());
             }
             catch (Exception ex)
             {
@@ -65,7 +65,7 @@ namespace WebApp.Controllers
             var response = new QuestionResponse();
             try
             {
-                response.Question = _questionsService.GetQuestion(AuthToken(), id);
+                response.Result = _questionsService.GetQuestion(AuthToken(), id);
             }
             catch (Exception ex)
             {
@@ -76,12 +76,12 @@ namespace WebApp.Controllers
         }
         
         [HttpPost("questions/add")]
-        public QuestionResponse AddQuestion(Question question)
+        public Response<Question> AddQuestion(Question question)
         {
-            var response = new QuestionResponse();
+            var response = new Response<Question>();
             try
             {
-                _questionsService.CreateQuestion(AuthToken(), _questionsMapper.Map(question));
+                response.Result = _questionsService.CreateQuestion(AuthToken(), _questionsMapper.Map(question));
             }
             catch (Exception ex)
             {
@@ -93,16 +93,20 @@ namespace WebApp.Controllers
         }
         
         [HttpPost("questions/{questionId}/vote/{answerId}")]
-        public void Vote(int questionId, int answerId)
+        public Response<Question> Vote(int questionId, int answerId)
         {
             _questionsService.Vote(AuthToken(), questionId, answerId);
+            return new Response<Question>
+            {
+                Result = _questionsService.GetQuestion(AuthToken(), questionId)
+            };
         }
 
         [HttpDelete("questions/{questionId}")]
-        public Response DeleteQuestion(int questionId)
+        public Response<string> DeleteQuestion(int questionId)
         { 
             _questionsService.DeleteQuestion(AuthToken(), questionId);
-            return new Response();
+            return new Response<string>() {Result = "Deleted"};
         }
 
         private string AuthToken()

@@ -1,9 +1,8 @@
 <template>
     <div style="background: var(--color-bg); padding: 24px">
-        <div class="list">
+        <div class="list content">
             <div @click="showQuestion(q.id)" v-for="q in questions" :key="q.id" >
                 <ListItem v-bind:question="q"/>
-                <div style="font-size: 10px">{{q}}</div>
             </div>
         </div>
     </div>
@@ -32,18 +31,8 @@
         padding-bottom: 12px;
         padding-top: 12px;
         background: white;
-        width: 30%;
+        //width: 30%;
         margin-left: auto;
         margin-right: auto;
-    }
-    
-    .questionItem {
-        background: var(--color-accent-transparent);
-        cursor: pointer;
-        margin: auto;
-        width: 400px;
-        padding-top: 16px;
-        min-height: 48px;
-        border-bottom: 1px solid var(--color-placeholder);
     }
 </style>

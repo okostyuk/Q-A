@@ -1,5 +1,5 @@
 const http_service = {
-    baseUrl: "",
+    baseUrl: "",//https://localhost:5001",
     DELETE(path, listener) {
         this.proceed(fetch(
             this.baseUrl + path, 
@@ -28,12 +28,13 @@ const http_service = {
             } else {
                 response.json().then(
                     jsonResponse => {
+                        console.log(jsonResponse);
                         if (jsonResponse.error !== undefined && jsonResponse.error !== null) {
                             console.log("http_service listener.onError");
                             listener.onError("Response error: " + jsonResponse.error);
                         } else {
                             console.log("http_service listener.onSuccess");
-                            listener.onSuccess(jsonResponse);
+                            listener.onSuccess(jsonResponse.result);
                         }
                     }
                 )

@@ -24,6 +24,19 @@ namespace WebApp.Controllers
                 src.PublishDate = DateTime.Now;
             }
 
+            src.MaxCustomAnswers = src.ClientMaxCustomAnswers == null 
+                ? 0 
+                : int.Parse(src.ClientMaxCustomAnswers);
+            
+            src.MaxVoteVariants = src.ClientMaxVoteVariants == null 
+                ? 1 
+                : int.Parse(src.ClientMaxVoteVariants);
+
+            if (src.MaxCustomAnswers < 0 || src.MaxVoteVariants < 0)
+            {
+                throw new Exception("Invalid value");
+            }
+
             return src;
         }
     }

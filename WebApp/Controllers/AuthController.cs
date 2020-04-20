@@ -32,7 +32,8 @@ namespace WebApp.Controllers
                 Console.WriteLine(HttpContext.User.Identity.ToString());
                 var authToken = _authService.SignUp(authRequest.Email, authRequest.Password);
                 Response.Cookies.Append(AuthTokenCookieKey, authToken);
-                return new AuthResponse();
+                var response = new AuthResponse {/*Result = null*/};
+                return response;
             }
             catch (InvalidDataException ex)
             {

@@ -106,4 +106,22 @@ export default {
   }
 
   .error {color: orangered}
+  
+  .content{
+    width: 50%;
+    margin: auto;
+  }
+
+  .list_item {
+    cursor: pointer;
+    display: flex;
+    position: relative;
+    padding-left: 16px;
+    padding-right: 16px;
+    height: 72px;
+    align-items: center;
+  }
+
+  .list_item:hover{background-color: var(--color-accent-transparent);}
+  
 </style>

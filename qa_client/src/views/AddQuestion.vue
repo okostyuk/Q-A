@@ -24,6 +24,12 @@
                     Cколько максимум можно добавить вариантов ответов<br>
                     <input id="maxCustomAnswers" v-model="maxCustomAnswers" type="number" v-bind:disabled="!customAnswersAllowed">
                 </label>
+                <br/>
+                <label style="margin-left: 48px">
+                    За сколько вариантов может одновременно проголосовать отвечающий<br>
+                    <input v-model="question.maxVoteVariants" type="number" v-bind:disabled="!customAnswersAllowed">
+                </label>
+
                 <hr>
                 Ответы:
                 <br/>
@@ -52,11 +58,12 @@
                 maxCustomAnswers: 1,
                 question: {
                     clientTitle: '',
+                    maxVoteVariants: 1,
                     clientMaxCustomAnswers: 0,
                     clientExpiresDate: '',
                     clientAnswers: [
                         {id: 0, text: ""}
-                    ]                
+                    ]
                 },
             }
         },
@@ -85,15 +92,16 @@
             addQuestion(publish) {
                 this.question.clientPublish = publish;
                 if (this.customAnswersAllowed) {
-                    this.question.clientMaxCustomAnswers = 0;    
-                } else {
                     this.question.clientMaxCustomAnswers = this.maxCustomAnswers;
+                } else {
+                    this.question.clientMaxCustomAnswers = 0;
                 }
                 http_service.POST('/api/questions/add', this, this.question);
             },
-            onSuccess(response) {
-                console.log(response);
+            onSuccess(result) {
+                console.log("AddQuestion:onSuccess " + JSON.stringify(result));
                 alert("SUCCESS");
+                this.$router.push('/question/'+ result.id)
             },
             onError(error) {
                 console.log(error);
@@ -106,7 +114,7 @@
 <style>
     #form {
         padding: 10px;
-        border: 1px solid #42b983;
+        border: 1px solid var(--color-accent-secondary);
         text-align: left; 
         width: 720px;
         margin: auto auto 10px;
@@ -115,7 +123,7 @@
     #buttons {
         text-align: right;
         margin: auto;
-        width: 760px;
+        width: 720px;
     }
     
     textarea {

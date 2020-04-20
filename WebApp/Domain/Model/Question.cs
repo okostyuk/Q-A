@@ -14,7 +14,10 @@ namespace WebApp.Domain
         public string ClientTitle { get; set; }
 
         public int MaxCustomAnswers { get; set; }
-        public int ClientMaxCustomAnswers { get; set; }
+        public string ClientMaxCustomAnswers { get; set; }
+        
+        public int MaxVoteVariants { get; set; }
+        public string ClientMaxVoteVariants { get; set; }
 
         //[JsonIgnore]
         public DateTime? ExpiresDate { get; set; }

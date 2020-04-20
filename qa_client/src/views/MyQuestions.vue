@@ -30,7 +30,7 @@
             onSuccess(result) {
                 this.loading = false;
                 this.error_label = '';
-                this.my_questions = result.questions;
+                this.my_questions = result;
             },
             onError(error) {
                 this.loading = false;

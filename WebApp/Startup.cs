@@ -1,10 +1,7 @@
-using System;
-using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using WebApp.Data;
 using WebApp.Domain;
@@ -28,12 +25,13 @@ namespace WebApp
                 configuration.RootPath = "../qa_client/dist";
             });
             services.AddControllers();
-            var dataRepository = new DataRepository();
+            var dataRepository = new DataRepository(Configuration.GetConnectionString("oleg_home_win"));
             services.AddSingleton<IQuestionsRepository>(dataRepository);
             services.AddSingleton<IUserRepository>(dataRepository);
             services.AddSingleton<IQuestionsService, App>();
             services.AddSingleton<IAuthService, App>();
-            services.AddCors(options =>
+            services.AddMvc().AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
+            /*services.AddCors(options =>
             {
                 options.AddPolicy("VueCorsPolicy", builder =>
                 {
@@ -41,11 +39,12 @@ namespace WebApp
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials()
-                        .WithOrigins("http://localhost:8081")
-                        .WithOrigins("http://localhost:5000")
-                        .WithOrigins("https://localhost:5001");
+                        .WithOrigins(
+                            "http://localhost:5000",
+                            "https://localhost:5001");
+                    
                 });
-            });
+            });*/
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,12 +56,12 @@ namespace WebApp
             }
 
             app.UseRouting();
+            //app.UseCors("VueCorsPolicy");
             app.UseAuthorization();
             
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCors("VueCorsPolicy");
             app.UseSpaStaticFiles();
             app.UseSpa(spa =>
                 {
