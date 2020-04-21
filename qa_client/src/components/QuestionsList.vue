@@ -1,11 +1,9 @@
 <template>
-    <div style="background: var(--color-bg); padding: 24px">
         <div class="list content">
             <div @click="showQuestion(q.id)" v-for="q in questions" :key="q.id" >
                 <ListItem v-bind:question="q"/>
             </div>
         </div>
-    </div>
 </template>
 
 <script>
@@ -31,7 +29,6 @@
         padding-bottom: 12px;
         padding-top: 12px;
         background: white;
-        //width: 30%;
         margin-left: auto;
         margin-right: auto;
     }

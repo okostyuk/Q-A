@@ -1,12 +1,19 @@
 <template>
     <div>
         <h2>{{page_title}}</h2>
-        <input v-bind:disabled="loading" placeholder="Email address" v-model="auth_request.email"><br>
-        <input v-bind:disabled="loading" placeholder="Password" v-model="auth_request.password"><br>
-        <p v-if="!loading" class="error">{{error_label}}</p>
-        <div><loader v-if="loading"/></div>
-        <button v-bind:disabled="loading" v-on:click="login()">SIGN IN</button> or
-        <button v-bind:disabled="loading" v-on:click="register()">REGISTER</button>
+        <div v-if="signedIn">
+            <p>You are logged in as</p>
+            <p><a>{{email}}</a></p>
+            <button @click="logout">LOGOUT</button>
+        </div>
+        <div v-else>
+            <input v-bind:disabled="loading" placeholder="Email address" v-model="auth_request.email"><br>
+            <input v-bind:disabled="loading" placeholder="Password" v-model="auth_request.password"><br>
+            <p v-if="!loading" class="error">{{error_label}}</p>
+            <div><loader v-if="loading"/></div>
+            <button v-bind:disabled="loading" v-on:click="login()">SIGN IN</button> or
+            <button v-bind:disabled="loading" v-on:click="register()">REGISTER</button>
+        </div>
         <br/>
         <br/>
     </div>
@@ -19,6 +26,8 @@
         name: "Login",
         data: function() {
             return {
+                email: http_service.email(),
+                userId: "",
                 page_title: 'Login page',
                 error_label: '',
                 loading: false,
@@ -28,7 +37,17 @@
                 }
             }
         },
+        computed: {
+            signedIn: function () {
+                return this.userId.length > 0;
+            }
+        },
         methods: {
+            logout() {
+                this.userId = "";
+                this.email = "";
+                http_service.logout();
+            },
             login() {
                 this.loading = true;
                 this.error_label = '';
@@ -43,7 +62,12 @@
                 console.log("onSuccess: " + jsonResult);
                 this.loading = false;
                 this.error_label = '';
-                this.$router.push('/home')
+                let target = '/home';
+                let redirectTo = this.$route.params.redirectTo;
+                if (redirectTo) {
+                    target = redirectTo;
+                }
+                this.$router.push(target);
             },
             onError(errorText) {
                 console.log("onError: " + errorText);
@@ -55,6 +79,11 @@
             Loader
         },
         mounted() {
+            this.userId = http_service.userId();
+            this.email = http_service.email();
+            if (this.userId.length === 0) {
+                http_service.logout();
+            }
         }
     }
 </script>

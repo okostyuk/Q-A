@@ -15,19 +15,18 @@
                     <input v-model="question.clientExpiresDate" type="date">
                 </label>
                 <br>
-                <label>
+                <label class="clickable">
                     <input v-model="customAnswersAllowed" type="checkbox"/>
-                    Могут ли участники добавлять свои варианты ответов
-                </label>
-                <br>
-                <label style="margin-left: 48px">
-                    Cколько максимум можно добавить вариантов ответов<br>
-                    <input id="maxCustomAnswers" v-model="maxCustomAnswers" type="number" v-bind:disabled="!customAnswersAllowed">
+                    Могут ли участники добавлять свои варианты ответов.
+                    <br>
+                    Cколько максимум можно добавить вариантов ответов:
                 </label>
                 <br/>
-                <label style="margin-left: 48px">
+                <input id="maxCustomAnswers" v-model="maxCustomAnswers" type="number" v-bind:disabled="!customAnswersAllowed">
+                <br/>
+                <label>
                     За сколько вариантов может одновременно проголосовать отвечающий<br>
-                    <input v-model="question.maxVoteVariants" type="number" v-bind:disabled="!customAnswersAllowed">
+                    <input v-model="question.clientMaxVoteVariants" type="number" >
                 </label>
 
                 <hr>
@@ -53,14 +52,14 @@
         name: 'AddQuestion',
         data: function () {
             return {
-                error_text: "test",
+                error_text: "",
                 customAnswersAllowed: false,
-                maxCustomAnswers: 1,
+                maxCustomAnswers: "1",
                 question: {
                     clientTitle: '',
-                    maxVoteVariants: 1,
+                    clientMaxVoteVariants: 1,
                     clientMaxCustomAnswers: 0,
-                    clientExpiresDate: '',
+                    clientExpiresDate: new Date(),
                     clientAnswers: [
                         {id: 0, text: ""}
                     ]
@@ -94,14 +93,14 @@
                 if (this.customAnswersAllowed) {
                     this.question.clientMaxCustomAnswers = this.maxCustomAnswers;
                 } else {
-                    this.question.clientMaxCustomAnswers = 0;
+                    this.question.clientMaxCustomAnswers = "0";
                 }
                 http_service.POST('/api/questions/add', this, this.question);
             },
             onSuccess(result) {
                 console.log("AddQuestion:onSuccess " + JSON.stringify(result));
                 alert("SUCCESS");
-                this.$router.push('/question/'+ result.id)
+                this.$router.push('/questions/'+ result.id)
             },
             onError(error) {
                 console.log(error);
@@ -140,11 +139,14 @@
         margin-bottom: 12px;
     }
     
-    #maxCustomAnswers {
-        margin-left: 48px;
-        min-width: 0;
-        width: 160px;
+    input[type="number"] {
+        width: 210px;
     }
+    
+/*    #maxCustomAnswers {
+        min-width: 0;
+        width: 210px;
+    }*/
 
     input[type="checkbox"] {
         min-width: 0;
@@ -152,9 +154,10 @@
     }
     
     .answer {
-        width: 600px;
+        width: 610px;
+        margin-right: 8px;
     }
-    
+
     #root {
         margin-bottom: 100px;
     }

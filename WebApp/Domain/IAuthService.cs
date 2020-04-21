@@ -2,7 +2,8 @@ namespace WebApp.Domain
 {
     public interface IAuthService
     {
-        public string SignUp(string email, string password);
-        public string SignIn(string email, string password);
+        public User SignUp(string email, string password);
+        public User SignIn(string email, string password);
+        bool AuthTokenValid(string token);
     }
 }

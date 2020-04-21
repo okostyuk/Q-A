@@ -1,7 +1,7 @@
 <template>
     <div>
         <h2>Main page</h2>
-        <div class="content" style="text-align: right">
+        <div class="container right" style="text-align: right">
             <button @click="addQuestion">СОЗДАТЬ ОПРОС</button>
             <button @click="loadQuestions">REFRESH</button>
         </div>
@@ -45,6 +45,10 @@
             onError(errorText) {
                 this.loading = false;
                 this.error.text = errorText;
+            },
+            onAuthError() {
+                http_service.logout();
+                this.$router.push({ name: 'login', params: { redirectTo: '/home' } });
             }
         },
         components: {
@@ -52,15 +56,11 @@
             Loader
         },
         mounted() {
-/*            this.questions = [
-                {title: "q1", subtitle: "user1", info: 55},
-                {title: "q2", subtitle: "user2", info: 9}
-            ];*/
-            this.loadQuestions();
+            if (http_service.userId().length === 0) {
+                this.onAuthError();
+            } else {
+                this.loadQuestions();
+            }
         }
     }
 </script>
-
-<style scoped>
-
-</style>

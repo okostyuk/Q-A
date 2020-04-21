@@ -115,7 +115,15 @@ namespace WebApp.Data
                 GetConnection().Execute(sql, answer);
             }
         }
-        
+
+        public int AddAnswer(Answer answer)
+        {
+            var sql = "INSERT INTO dbo.answers (questionId, userId, text) VALUES (@QuestionId, @UserId, @Text)";        
+            GetConnection().Execute(sql, answer);
+            var id = GetConnection().ExecuteScalar<int>(@"SELECT CAST(IDENT_CURRENT('answers') as int)");
+            return id;
+        }
+
         public List<Vote> FindVotesByQuestionId(int questionId)
         {
             return GetConnection().Query<Vote>(
@@ -149,7 +157,7 @@ namespace WebApp.Data
                 if (maxCustomAnswers > 0)
                 {
                     GetConnection().Execute(
-                        "UPDATE dbo.answers SET maxCustomAnswer=@MaxCustomAnswers WHERE id=@QuestionId",
+                        "UPDATE dbo.questions SET maxCustomAnswers=@MaxCustomAnswers WHERE id=@QuestionId",
                         new {QuestionId = questionId, MaxCustomAnswers = maxCustomAnswers - 1}
                     );
                 }

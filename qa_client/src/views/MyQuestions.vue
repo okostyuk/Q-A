@@ -1,16 +1,13 @@
 <template>
-    <div>
+    <div style="margin-bottom: 48px">
         <h2>MyQuestions Page</h2>
-        <hr>
         <Loader v-if="loading"/>
-        <br/>
+        <div class="container right"> <button @click="addQuestion()">CREATE NEW ONE</button> </div>
         <label v-if="my_questions.length === 0">Вы не создали ни одного опроса
             <br>
             Нажмите кнопку "ADD QUESTION" что бы создать новый вопрос
         </label>
         <QuestionsList v-else v-bind:questions="my_questions"/>
-        <hr>
-        <button @click="addQuestion()">ADD QUESTION</button>
     </div>
 </template>
 
@@ -35,6 +32,10 @@
             onError(error) {
                 this.loading = false;
                 this.error_label = error;
+            },
+            onAuthError() {
+                http_service.logout();
+                this.$router.push({ name: 'login', params: { redirectTo: '/my' } });
             },
             loadMyQuestions() {
                 this.loading = true;

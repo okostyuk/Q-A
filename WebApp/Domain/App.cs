@@ -17,17 +17,15 @@ namespace WebApp.Domain
             _questionsRepository = questionsRepository;
         }
 
-        public string SignUp(string email, string password)
+        public User SignUp(string email, string password)
         {
             var existUser = _userRepository.FindUserByEmail(email);
             if (existUser != null) throw new InvalidDataException("User with this email already exists");
             var storedUser = _userRepository.AddUser(email, Utils.Hash(password));
-            var authToken = Guid.NewGuid().ToString();
-            _userRepository.AddToken(storedUser.Id, authToken);
-            return authToken;
+            return storedUser;
         }
 
-        public string SignIn(string email, string password)
+        public User SignIn(string email, string password)
         {
             Console.WriteLine("SignIn {0}", email );
             var existUser = _userRepository.FindUserByEmail(email);
@@ -37,10 +35,16 @@ namespace WebApp.Domain
             {
                 var authToken = Guid.NewGuid().ToString();
                 _userRepository.AddToken(existUser.Id, authToken);
-                return authToken;
+                existUser.AuthToken = authToken;
+                return existUser;
             }
 
             throw new InvalidDataException("Invalid password");
+        }
+
+        public bool AuthTokenValid(string token)
+        {
+            return _userRepository.FindUserByToken(token) != null;
         }
 
         public Question CreateQuestion(string authToken, Question question)
@@ -77,17 +81,12 @@ namespace WebApp.Domain
                 ? votes 
                 : votes.FindAll(v => v.UserId.Equals(user.Id));
 
+            foreach (var answer in from answer in question.Answers from vote in votes.Where(vote => vote.AnswerId.Equals(answer.Id)) select answer)
+            {
+                answer.VotesCount++;
+            }
+            
             return question;
-        }
-
-        public User GetUser(string authToken, int userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<User> GetUsers(string authToken)
-        {
-            throw new NotImplementedException();
         }
 
         public void Vote(string authToken, int questionId, int answerId)
@@ -95,32 +94,21 @@ namespace WebApp.Domain
             var user = _userRepository.FindUserByToken(authToken);
             _questionsRepository.AddVote(questionId, answerId, user.Id);
         }
-
-        public Question AddAnswer(string authToken, int questionId, string answerText)
+        
+        
+        public int AddAnswer(string authToken, Answer answer)
         {
+            var question = _questionsRepository.FindQuestionById(answer.QuestionId);
+            if (question.MaxCustomAnswers <= 0)
+            {
+                throw new InvalidDataException("MaxCustomAnswers limit reached");
+            }
+
             var user = _userRepository.FindUserByToken(authToken);
-            var question = _questionsRepository.FindQuestionById(questionId);
-
-            if (!question.IsPublished() && !question.UserId.Equals(user.Id))
-            {
-                throw new InvalidDataException("You can`t add answer to other user`s question");
-            }
-
-            if (question.IsPublished() && question.MaxCustomAnswers == 0)
-            {
-                throw new InvalidDataException("Custom answers limit is reached");
-            }
-            
-            var answer = new Answer {QuestionId = questionId, UserId = user.Id, Text = answerText};
-            if (question.IsPublished())
-            {
-                _questionsRepository.DecreaseQuestionCustomAnswers(questionId);
-            }
-            _questionsRepository.AddAnswers(questionId, new List<Answer> {answer});
-
-            question.Answers = _questionsRepository.FindAnswersByQuestionId(questionId);
-            
-            return question;
+            answer.UserId = user.Id;
+            var answerId = _questionsRepository.AddAnswer(answer);
+            _questionsRepository.DecreaseQuestionCustomAnswers(answer.QuestionId);
+            return answerId;
         }
 
         public void DeleteQuestion(string authToken, int questionId)

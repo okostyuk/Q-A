@@ -12,13 +12,20 @@
 
 <script>
   import NavigationBar from './components/NavigationBar'
+  import http_service from "./http-service";
 
 export default {
   name: 'App',
   navigationBar: NavigationBar,
   data: function () {
     return {
+      userId: http_service.userId(),
       theme: "light"
+    }
+  },
+  computed: {
+    auth_button: function () {
+      return http_service.userId() === "" ? "SIGN IN" : "Sign out (" + http_service.userId() + ")"
     }
   },
   methods: {
@@ -44,6 +51,7 @@ export default {
     --color-secondary: rgba(0, 0, 0, 0.54);
     --color-bg: rgb(250, 250, 250);
     --color-placeholder: #cfcfcf;
+    --color-border: #e5e5e5;
     --font-size-primary: 20px;
     --font-size-secondary: 16px;
     --font-size-info: 14px;
@@ -66,7 +74,6 @@ export default {
 
   label {
     color: var(--color-primary);
-    //font-size: 20px;
   }
 
   textarea,
@@ -109,7 +116,13 @@ export default {
   
   .content{
     width: 50%;
-    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border: 1px solid var(--color-border);
+    background: white;
   }
 
   .list_item {
@@ -124,4 +137,25 @@ export default {
 
   .list_item:hover{background-color: var(--color-accent-transparent);}
   
+  .container {
+    width: 50%; margin: auto;
+  }
+  
+  .left {
+    text-align: left;
+  }
+  
+  .right {
+    text-align: right;
+  }
+  
+  .clickable {
+    cursor: pointer;
+  }
+
+  .clickable:hover {
+    background: var(--color-accent-transparent);
+  }
+
+
 </style>

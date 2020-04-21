@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Domain;
 
@@ -19,11 +20,13 @@ namespace WebApp.Controllers
     public class QuestionsController : ControllerBase
     {
         private readonly IQuestionsService _questionsService;
+        private readonly IAuthService _authService;
         private readonly IMapper<Question, Question> _questionsMapper;
         
-        public QuestionsController(IQuestionsService questionsService)
+        public QuestionsController(IQuestionsService questionsService, IAuthService authService)
         {
             _questionsService = questionsService;
+            _authService = authService;
             _questionsMapper = new QuestionsMapper();
         }
 
@@ -34,6 +37,10 @@ namespace WebApp.Controllers
             try
             {
                 response.Result = _questionsService.GetQuestions(AuthToken());
+            }
+            catch (AuthenticationException ex)
+            {
+                response.AuthError = "AuthError: " + ex.Message;
             }
             catch (Exception ex)
             {
@@ -51,6 +58,10 @@ namespace WebApp.Controllers
             {
                 response.Result = _questionsService.GetUserQuestions(AuthToken());
             }
+            catch (AuthenticationException ex)
+            {
+                response.AuthError = "AuthError: " + ex.Message;
+            }
             catch (Exception ex)
             {
                 response.Error = "Error: " + ex.Message;
@@ -67,6 +78,10 @@ namespace WebApp.Controllers
             {
                 response.Result = _questionsService.GetQuestion(AuthToken(), id);
             }
+            catch (AuthenticationException ex)
+            {
+                response.AuthError = "AuthError: " + ex.Message;
+            }
             catch (Exception ex)
             {
                 response.Error = ex.Message;
@@ -82,6 +97,10 @@ namespace WebApp.Controllers
             try
             {
                 response.Result = _questionsService.CreateQuestion(AuthToken(), _questionsMapper.Map(question));
+            }
+            catch (AuthenticationException ex)
+            {
+                response.AuthError = "AuthError: " + ex.Message;
             }
             catch (Exception ex)
             {
@@ -101,6 +120,18 @@ namespace WebApp.Controllers
                 Result = _questionsService.GetQuestion(AuthToken(), questionId)
             };
         }
+        
+        [HttpPost("questions/voteCustom")]
+        public Response<Question> VoteCustom(Answer answer)
+        {
+            var authToken = AuthToken();
+            var answerId = _questionsService.AddAnswer(authToken, answer);
+            _questionsService.Vote(authToken, answer.QuestionId, answerId);
+            return new Response<Question>
+            {
+                Result = _questionsService.GetQuestion(authToken, answer.QuestionId)
+            };
+        }
 
         [HttpDelete("questions/{questionId}")]
         public Response<string> DeleteQuestion(int questionId)
@@ -111,7 +142,15 @@ namespace WebApp.Controllers
 
         private string AuthToken()
         {
-            return Request.Cookies[AuthController.AuthTokenCookieKey];
+            var authToken = Request.Cookies[AuthController.AuthTokenCookieKey];
+            if (!string.IsNullOrEmpty(authToken) && _authService.AuthTokenValid(authToken)) 
+                return authToken;
+            
+            Response.Cookies.Append(AuthController.AuthTokenCookieKey, "");
+            Response.Cookies.Append(AuthController.UserIdCookieKey, "");
+            Response.Cookies.Append(AuthController.EmailCookieKey, "");
+            throw new AuthenticationException("invalid token");
+
         }
     }
 }

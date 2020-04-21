@@ -16,6 +16,8 @@ namespace WebApp.Controllers
     public class AuthController : ControllerBase
     {
         public const string AuthTokenCookieKey = "qa_auth_token";
+        public const string UserIdCookieKey = "qa_user_id";
+        public const string EmailCookieKey = "qa_user_email";
 
         private readonly IAuthService _authService;
 
@@ -24,16 +26,23 @@ namespace WebApp.Controllers
             _authService = authService;
         }
 
+        [HttpPost("logout")]
+        public Response<string> Logout(AuthRequest authRequest)
+        {
+            Response.Cookies.Append(AuthTokenCookieKey, "");
+            Response.Cookies.Append(UserIdCookieKey, "");
+            Response.Cookies.Append(EmailCookieKey, "");
+            
+            return new Response<string> {Result = "Session terminated successfully"};
+        }
+
         [HttpPost("signUp")]
         public AuthResponse SignUp(AuthRequest authRequest)
         {
             try
             {
-                Console.WriteLine(HttpContext.User.Identity.ToString());
-                var authToken = _authService.SignUp(authRequest.Email, authRequest.Password);
-                Response.Cookies.Append(AuthTokenCookieKey, authToken);
-                var response = new AuthResponse {/*Result = null*/};
-                return response;
+                _authService.SignUp(authRequest.Email, authRequest.Password);
+                return Auth(authRequest);
             }
             catch (InvalidDataException ex)
             {
@@ -51,9 +60,12 @@ namespace WebApp.Controllers
         {
             try
             {
-                var authToken = _authService.SignIn(authRequest.Email, authRequest.Password);
-                Response.Cookies.Append(AuthTokenCookieKey, authToken);
-                return new AuthResponse();
+                var user = _authService.SignIn(authRequest.Email, authRequest.Password);
+                Response.Cookies.Append(AuthTokenCookieKey, user.AuthToken);
+                Response.Cookies.Append(UserIdCookieKey, user.Id.ToString());
+                Response.Cookies.Append(EmailCookieKey, user.Email);
+                user.Password = "";
+                return new AuthResponse() {Result = user};
             }
             catch (InvalidDataException ex)
             {
