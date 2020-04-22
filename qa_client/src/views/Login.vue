@@ -20,6 +20,7 @@
 </template>
 
 <script>
+    import qa_rest_service from "../qa-rest-service";
     import http_service from '../http-service.js'
     import Loader from '../components/Loader'
     export default {
@@ -51,12 +52,16 @@
             login() {
                 this.loading = true;
                 this.error_label = '';
-                http_service.POST('/api/auth', this, this.auth_request);
+                qa_rest_service.login(this.auth_request)
+                    .then(result => this.onSuccess(result))
+                    .catch(error => this.onError(error));
             },
             register() {
                 this.loading = true;
                 this.error_label = '';
-                http_service.POST('/api/auth/signUp', this, this.auth_request);
+                qa_rest_service.register(this.auth_request)
+                    .then(result => this.onSuccess(result))
+                    .catch(error => this.onError(error));
             },
             onSuccess(jsonResult) {
                 console.log("onSuccess: " + jsonResult);

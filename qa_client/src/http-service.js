@@ -7,8 +7,14 @@ const http_service = {
             listener
         )
     },
-    GET(path, listener) {
-        setTimeout(() => this.proceed(fetch(this.baseUrl + path), listener), 250);
+    GET(path) {
+        return fetch(this.baseUrl + path);
+    },
+    SIMPLE_POST(path, body) {
+        return fetch(this.baseUrl + path, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(body)});
     },
     POST(path, listener, bodyObject) {
         console.log(JSON.stringify(bodyObject));

@@ -15,6 +15,7 @@
     import Loader from "../components/Loader";
     import http_service from "../http-service";
     import QuestionsList from "../components/QuestionsList";
+    import qa_rest_service from "../qa-rest-service";
     export default {
         name: "MyQuestions",
         data: function () {
@@ -39,7 +40,9 @@
             },
             loadMyQuestions() {
                 this.loading = true;
-                http_service.GET('/api/questions/my', this);
+                qa_rest_service.getQuestions()
+                    .then(result => this.onSuccess(result))
+                    .catch(error => this.onError(error))
             },
             addQuestion() {
                 this.$router.push('/add')

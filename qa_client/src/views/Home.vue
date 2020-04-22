@@ -16,6 +16,7 @@
 <script>
     import Loader from "../components/Loader"
     import http_service from "../http-service";
+    import qa_rest_service from "../qa-rest-service";
     import QuestionsList from "../components/QuestionsList";
     export default {
         name: "Home",
@@ -35,7 +36,9 @@
             },
             loadQuestions() {
                 this.loading = true;
-                http_service.GET('/api/questions', this)
+                qa_rest_service.getQuestions()
+                    .then(result => this.onSuccess(result))
+                    .catch(error => this.onError(error))
             },
             onSuccess(response) {
                 this.error.text = "";

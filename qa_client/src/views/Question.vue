@@ -43,6 +43,7 @@
 </style>
 
 <script>
+    import qa_rest_service from "../qa-rest-service";
     import http_service from "../http-service";
     import Loader from '../components/Loader'
     export default {
@@ -129,7 +130,9 @@
             loadQuestion() {
                 this.loading = true;
                 this.errorText = null;
-                http_service.GET('/api/questions/'+this.id, this);
+                qa_rest_service.getQuestion(this.id)
+                    .then(_question => this.onSuccess(_question))
+                    .catch(error => this.onError(error));
             },
             onSuccess(_question) {
                 this.loading = false;
